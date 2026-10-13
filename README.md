@@ -4,9 +4,7 @@
 
 Band 3 students make their own linear equation and then solve it step by step with animated bar models.
 
-* **Type it**: type any linear equation in x, or tap one of the examples.
-* **Hide a number**: pick a secret x, then disguise it with moves done to both sides; the bars show both sides staying equal.
-* **Challenges**: bracket builder, x on both sides, fraction friend, and "fool the solver".
+Type any linear equation in x (there is a keypad), or tap one of the examples.
 
 Each step shows the bars, asks one question, and explains common mistakes. "I'm stuck" gives a hint, and "Show me" gives the answer. The working builds up beside the bars, and the last step checks the answer by putting it back into the equation.
 

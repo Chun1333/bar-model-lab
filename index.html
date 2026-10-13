@@ -47,10 +47,7 @@ h1{margin:0;font-size:30px;font-weight:700;line-height:1.15}
 .card{background:var(--card);border:1px solid var(--rule);margin:16px 0;padding:18px 20px;position:relative}
 .card::after{content:"";position:absolute;inset:3px;border:1px solid var(--rule);pointer-events:none;opacity:.55}
 h2{font-size:21px;margin:0 0 10px}
-.tabs{display:flex;gap:0;border-bottom:1px solid var(--ink);margin-bottom:14px;flex-wrap:wrap}
-.tab{border:1px solid transparent;border-bottom:none;background:none;padding:7px 14px;cursor:pointer;margin-bottom:-1px;color:var(--muted)}
-.tab.sel{border-color:var(--ink);background:var(--card);color:var(--ink);font-weight:700}
-.tab:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+button:focus-visible,input:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
 label.lbl{display:block;color:var(--muted);font-size:15px;margin-bottom:4px}
 input.eq{width:100%;padding:9px 12px;border:1px solid var(--ink);background:var(--card);font-size:20px;border-radius:2px}
 .preview{min-height:46px;padding:4px 0;overflow-x:auto;overflow-y:hidden}
@@ -184,13 +181,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
 <main>
 <section id="create" class="card" aria-labelledby="create-h">
   <h2 id="create-h">1. Make an equation</h2>
-  <div class="tabs" role="tablist">
-    <button class="tab" role="tab" data-tab="type">Type it</button>
-    <button class="tab" role="tab" data-tab="hide">Hide a number</button>
-    <button class="tab" role="tab" data-tab="challenge">Challenges</button>
-  </div>
-
-  <div id="pane-type" class="pane" role="tabpanel">
+  <div id="pane-type" class="pane">
     <label class="lbl" for="eq-input">Your equation (use x for the unknown)</label>
     <input id="eq-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example 3x + 4 = 19">
     <div id="eq-preview" class="preview" aria-live="polite"></div>
@@ -214,35 +205,6 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
     </div>
   </div>
 
-  <div id="pane-hide" class="pane" role="tabpanel" hidden>
-    <p class="md">Every equation hides a number. Pick a secret number for $x$, then disguise it. Each move is done to <b>both</b> sides, so the equation stays true.</p>
-    <div class="row"><span>Secret number:</span>
-      <span class="stepper"><button id="secret-minus" aria-label="smaller secret">−</button><span class="md">$x=$</span><b id="secret">5</b><button id="secret-plus" aria-label="bigger secret">+</button></span>
-    </div>
-    <div class="row"><span>Number for the next move:</span>
-      <span class="stepper"><button id="n-minus" aria-label="smaller number">−</button><b id="hide-n">3</b><button id="n-plus" aria-label="bigger number">+</button></span>
-    </div>
-    <div id="hide-ops" class="ops">
-      <button data-op="add">+ n</button><button data-op="sub">− n</button><button data-op="mul">× n</button><button id="op-div" data-op="div">÷ n</button><button data-op="addx">+ n<i>x</i></button><button data-op="subx">− n<i>x</i></button>
-    </div>
-    <div id="hide-eq" class="preview big" aria-live="polite"></div>
-    <div id="hide-bars" class="stage"></div>
-    <p id="hide-cap" class="hide-cap"></p>
-    <ol id="hide-moves" class="moves"></ol>
-    <div class="row">
-      <button id="hide-undo">Undo</button><button id="hide-reset">Start again</button><button id="hide-copy">Copy for a friend</button>
-      <button id="hide-solve" class="primary">Solve it with bars</button>
-    </div>
-    <div id="hide-msg" class="msg" aria-live="polite"></div>
-  </div>
-
-  <div id="pane-challenge" class="pane" role="tabpanel" hidden>
-    <div id="ch-list" class="chips"></div>
-    <p id="ch-text"></p>
-    <input id="ch-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type your equation">
-    <div class="row"><button id="ch-check" class="btn">Check my equation</button><button id="ch-solve" class="btn primary" hidden>Solve it with bars</button></div>
-    <div id="ch-msg" class="msg" aria-live="polite"></div>
-  </div>
 </section>
 
 <section id="model" class="card" hidden aria-labelledby="model-h">
@@ -267,7 +229,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
       <div class="nav"><button id="back" hidden>← Back</button><button id="replay">↻ Replay</button><button id="next" class="primary" hidden>Next step →</button></div>
       <div id="finish" hidden>
         <p id="finish-text"></p>
-        <div class="row"><button id="again" class="primary">Make another equation</button><button id="hide-own">Hide your own number</button></div>
+        <div class="row"><button id="again" class="primary">Make another equation</button></div>
         <p id="finish-count" class="muted"></p>
       </div>
     </div>
@@ -1781,9 +1743,8 @@ if (typeof module !== 'undefined') module.exports = Engine;
     const p = st.plan;
     st.finished = true;
     $('#finish').hidden = false;
-    const fromHide = st.from === 'hide' && p.X && p.X.eq(new Q(hide.s));
     $('#finish-text').innerHTML = p.X
-      ? md(fromHide ? `The bars found your secret number: $x=${p.Xtex}$!` : `You solved it: $x=${p.Xtex}$. ${p.fractionAnswer ? 'A fraction answer is still an answer!' : ''}`)
+      ? md(`You solved it: $x=${p.Xtex}$. ${p.fractionAnswer ? 'A fraction answer is still an answer!' : ''}`)
       : md('Now you know what happens when the x\'s cancel out completely.');
     const solved = store.get('solved', 0) + 1;
     store.set('solved', solved);
@@ -1847,7 +1808,7 @@ if (typeof module !== 'undefined') module.exports = Engine;
 
   // ------------------------------------------------------------ typing an equation
   function showInputError(e, from) {
-    const box = from === 'hide' ? $('#hide-msg') : from === 'challenge' ? $('#ch-msg') : $('#type-msg');
+    const box = $('#type-msg');
     box.className = 'msg bad';
     box.textContent = e.message || String(e);
   }
@@ -1876,163 +1837,8 @@ if (typeof module !== 'undefined') module.exports = Engine;
     preview();
   }
 
-  // ------------------------------------------------------------ hiding a number
-  const hide = { s: 5, hist: [], st: null, n: 3 };
-  function hideReset() {
-    hide.st = E.hideStart(hide.s); hide.hist = [];
-    hideRender();
-  }
-  function hideRender() {
-    $('#secret').textContent = String(hide.s).replace('-', '−');
-    $('#hide-n').textContent = hide.n;
-    const nn = hide.n, nx = nn === 1 ? 'x' : nn + 'x';
-    const lab = { add: `+ ${nn}`, sub: `− ${nn}`, mul: `× ${nn}`, div: `÷ ${nn}`, addx: `+ ${nx}`, subx: `− ${nx}` };
-    $$('#hide-ops button').forEach(b => { b.innerHTML = esc(lab[b.dataset.op]).replace(/x$/, '<i>x</i>'); });
-    $('#hide-eq').innerHTML = K(E.hideTex(hide.st), true);
-    hideBars();
-    $('#hide-moves').innerHTML = hide.hist.length
-      ? hide.hist.map(h => `<li>${md(h.say)}</li>`).join('')
-      : '<li class="muted">No moves yet. Every move is done to <b>both</b> sides, so the equation stays true.</li>';
-    // ÷ is allowed only when the right side is a number that divides exactly
-    const R = hide.st.R;
-    const rNum = !E.hasX(R);
-    const rv = rNum ? E.lin(R).b : null;
-    $('#op-div').disabled = !rNum || !rv.div(hide.n).isInt();
-    $('#op-div').title = $('#op-div').disabled ? 'Only when the right side divides exactly' : '';
-    $('#hide-solve').disabled = hide.hist.length === 0;
-    $('#hide-undo').disabled = hide.hist.length === 0;
-    $('#hide-msg').textContent = ''; $('#hide-msg').className = 'msg';
-    if (hide.hist.length >= 8) $('#hide-msg').textContent = 'That is a well-hidden number! Try solving it.';
-  }
-  // both sides as bars, for the secret value of x; a dashed outline shows the length before the last move
-  function hideBars() {
-    const box = $('#hide-bars');
-    if (!box || box.offsetParent === null) return;
-    const X = new Q(hide.s);
-    const rows = [E.sideRow(hide.st.L, X, '\\text{left}'), E.sideRow(hide.st.R, X, '\\text{right}')];
-    const v = E.valueAt(hide.st.L, X).abs();
-    const scene = { rows, guides: v.isZero() ? [] : [{ x: v, r1: 0, r2: 1 }] };
-    const prev = hide.hist.length ? hide.hist[hide.hist.length - 1].st : null;
-    const opts = {};
-    if (prev) { const pv = E.valueAt(prev.L, X).abs().val(); opts.prevLens = [pv, pv]; }
-    const w = Math.max(300, Math.min(720, box.clientWidth - 4));
-    box.innerHTML = drawBars(scene, w, false, opts).svg;
-    $('#hide-cap').innerHTML = prev
-      ? 'The dashed outline shows how long each side was before your last move. Both sides changed in the same way, so they are still the same length.'
-      : md(`Both sides are the same length: $x$ is your secret number, ${String(hide.s).replace('-', '−')}.`);
-  }
-  function hideOp(op) {
-    if (hide.hist.length >= 8) return;
-    const n = hide.n;
-    const names = { add: `Add $${n}$`, sub: `Take away $${n}$`, mul: `Multiply by $${n}$`, div: `Divide by $${n}$`,
-      addx: `Add $${n === 1 ? '' : n}x$`, subx: `Take away $${n === 1 ? '' : n}x$` };
-    let next;
-    try { next = E.hideApply(hide.st, op, n); E.plan(texToPlain(E.hideTex(next))); }
-    catch (e) { $('#hide-msg').className = 'msg bad'; $('#hide-msg').textContent = e.message; return; }
-    hide.hist.push({ st: hide.st, say: names[op] + ' on both sides' });
-    hide.st = next;
-    hideRender();
-  }
-  function hidePlain() {
-    // the equation as text the parser reads back
-    return texToPlain(E.hideTex(hide.st));
-  }
-  function texToPlain(t) {
-    let s = t.replace(/\\left\(/g, '(').replace(/\\right\)/g, ')');
-    for (let k = 0; k < 5; k++) s = s.replace(/\\[dt]?frac\{([^{}]*)\}\{([^{}]*)\}/g, '($1)/($2)');
-    return s.replace(/\\times/g, '×').replace(/\s+/g, '');
-  }
-
-  // ------------------------------------------------------------ challenges
-  const CH = [
-    { id: 'br', title: 'Bracket builder', text: 'Make an equation <b>with a bracket</b> whose answer is $x=4$.',
-      test: (src, p) => [/[([]/.test(src), 'Use a bracket ( ).'], X: 4 },
-    { id: 'both', title: 'Both sides', text: 'Put $x$ on <b>both sides</b> of the $=$ sign. The answer must be $x=-3$.',
-      test: (src, p, eq) => [E.hasX(eq.L) && E.hasX(eq.R), 'Put an x on each side of the = sign.'], X: -3 },
-    { id: 'fr', title: 'Fraction friend', text: 'Use a <b>fraction</b> (divide by a number) and make the answer $x=12$.',
-      test: src => [/\/|÷/.test(src), 'Use / or ÷ somewhere.'], X: 12 },
-    { id: 'fool', title: 'Fool the solver', text: 'Write the <b>longest</b> equation you can whose answer is $x=5$. Every part must count!',
-      test: () => [true, ''], X: 5, score: true },
-  ];
-  let chSel = 0;
-  function chRender() {
-    $('#ch-list').innerHTML = CH.map((c, i) => {
-      const done = store.get('ch.' + c.id, null);
-      return `<button class="chip ch${i === chSel ? ' sel' : ''}" data-i="${i}" aria-pressed="${i === chSel}">${esc(c.title)}${done ? ' ✓' : ''}</button>`;
-    }).join('');
-    const c = CH[chSel];
-    $('#ch-text').innerHTML = md(c.text) + (c.score ? `<span class="muted"> Best so far: ${store.get('ch.fool', 0) || '—'} operations.</span>` : '');
-    $('#ch-msg').textContent = ''; $('#ch-msg').className = 'msg';
-    $('#ch-solve').hidden = true;
-  }
-  function chCheck() {
-    const c = CH[chSel], src = $('#ch-input').value;
-    const msg = $('#ch-msg');
-    let p, eq;
-    try { eq = E.parseEquation(src); p = E.plan(src); } catch (e) { msg.className = 'msg bad'; msg.textContent = e.message; return; }
-    if (!p.X) { msg.className = 'msg bad'; msg.innerHTML = 'This equation has no single answer. Try again!'; return; }
-    const [ok, why] = c.test(src, p, eq);
-    const right = p.X.eq(new Q(c.X));
-    if (!right) {
-      msg.className = 'msg bad';
-      msg.innerHTML = md(`Close! But this equation's answer is not $x=${c.X}$. Check by putting $x=${c.X}$ into both sides.`);
-      $('#ch-solve').hidden = false;
-      return;
-    }
-    if (!ok) { msg.className = 'msg bad'; msg.textContent = 'The answer is right, but: ' + why; return; }
-    if (c.score && opScore(eq).ops < 2) {
-      msg.className = 'msg bad';
-      msg.innerHTML = md(`The answer is $x=${c.X}$, but that is not much of a disguise! Use real moves like $\\times 3$ or $+\\,7$ (adding $0$ or multiplying by $1$ does not count).`);
-      $('#ch-solve').hidden = false;
-      return;
-    }
-    let extra = '';
-    if (c.score) {
-      const { ops, triv } = opScore(eq);
-      const best = store.get('ch.fool', 0);
-      if (ops > best) store.set('ch.fool', ops);
-      extra = ` It uses ${ops} operation${ops === 1 ? '' : 's'} that change something${ops > best && best ? ' (a new record!)' : ''}.` +
-        (triv ? ` I did not count ${triv} do-nothing part${triv > 1 ? 's' : ''}, like $+\\,0$ or $\\times 1$.` : '');
-    }
-    store.set('ch.' + c.id, true);
-    msg.className = 'msg good';
-    msg.innerHTML = md(`Challenge done! Its answer really is $x=${c.X}$.${extra} Now watch the bars solve it.`);
-    $('#ch-solve').hidden = false;
-    chRenderKeepMsg();
-  }
-  // operations that really change something (adding 0 or multiplying by 1 does not count)
-  function opScore(eq) {
-    let ops = 0, triv = 0;
-    const isVal = (m, v) => { try { const l = E.lin(m); return l.a.isZero() && l.b.eq(v); } catch (e) { return false; } };
-    const walk = m => {
-      if (!m) return;
-      switch (m.t) {
-        case 'par': walk(m.a); return;
-        case 'neg': ops++; walk(m.a); return;
-        case 'add': case 'sub': if (isVal(m.b, 0) || (m.t === 'add' && isVal(m.a, 0))) triv++; else ops++; walk(m.a); walk(m.b); return;
-        case 'mul': if (isVal(m.a, 1) || isVal(m.b, 1)) triv++; else ops++; walk(m.a); walk(m.b); return;
-        case 'div': if (isVal(m.b, 1)) triv++; else ops++; walk(m.a); walk(m.b); return;
-      }
-    };
-    walk(eq.L); walk(eq.R);
-    return { ops, triv };
-  }
-  function chRenderKeepMsg() {
-    const m = $('#ch-msg').innerHTML, cls = $('#ch-msg').className, solve = $('#ch-solve').hidden;
-    chRender();
-    $('#ch-msg').innerHTML = m; $('#ch-msg').className = cls; $('#ch-solve').hidden = solve;
-  }
-
   // ------------------------------------------------------------ wiring
-  function tabs(name) {
-    $$('.tab').forEach(t => { const on = t.dataset.tab === name; t.classList.toggle('sel', on); t.setAttribute('aria-selected', on); });
-    $$('.pane').forEach(p => { p.hidden = p.id !== 'pane-' + name; });
-    store.set('tab', name);
-    if (name === 'hide' && hide.st) hideBars();
-  }
   function init() {
-    $$('.tab').forEach(t => t.addEventListener('click', () => tabs(t.dataset.tab)));
-    tabs(store.get('tab', 'type'));
     $('#eq-input').addEventListener('input', preview);
     $('#eq-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); startPlan($('#eq-input').value, 'type'); } });
     $('#draw').addEventListener('click', () => startPlan($('#eq-input').value, 'type'));
@@ -2046,28 +1852,6 @@ if (typeof module !== 'undefined') module.exports = Engine;
     $('#next').addEventListener('click', () => { if (st.i < st.plan.scenes.length - 1) { showScene(st.i + 1); } });
     $('#replay').addEventListener('click', () => { const r = st.revealed; renderStage(); if (r) setTimeout(applyReveal, 900); });
     $('#again').addEventListener('click', () => { $('#create').scrollIntoView({ behavior: 'smooth' }); $('#eq-input').focus({ preventScroll: true }); });
-    $('#hide-own').addEventListener('click', () => { tabs('hide'); $('#create').scrollIntoView({ behavior: 'smooth' }); });
-    // hide a number
-    $('#secret-minus').addEventListener('click', () => { hide.s = Math.max(-20, hide.s - 1); hideReset(); });
-    $('#secret-plus').addEventListener('click', () => { hide.s = Math.min(20, hide.s + 1); hideReset(); });
-    $('#n-minus').addEventListener('click', () => { hide.n = Math.max(1, hide.n - 1); hideRender(); });
-    $('#n-plus').addEventListener('click', () => { hide.n = Math.min(12, hide.n + 1); hideRender(); });
-    $$('#hide-ops button').forEach(b => b.addEventListener('click', () => hideOp(b.dataset.op)));
-    $('#hide-undo').addEventListener('click', () => { const h = hide.hist.pop(); if (h) hide.st = h.st; hideRender(); });
-    $('#hide-reset').addEventListener('click', hideReset);
-    $('#hide-solve').addEventListener('click', () => { const s = hidePlain(); $('#eq-input').value = s; preview(); startPlan(s, 'hide'); });
-    $('#hide-copy').addEventListener('click', async () => {
-      const s = hidePlain();
-      try { await navigator.clipboard.writeText(s); $('#hide-msg').className = 'msg good'; $('#hide-msg').textContent = 'Copied! Give it to a friend to solve.'; }
-      catch (e) { $('#hide-msg').className = 'msg'; $('#hide-msg').textContent = s; }
-    });
-    hideReset();
-    // challenges
-    $('#ch-list').addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (b) { chSel = +b.dataset.i; chRender(); } });
-    $('#ch-check').addEventListener('click', chCheck);
-    $('#ch-input').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); chCheck(); } });
-    $('#ch-solve').addEventListener('click', () => { const s = $('#ch-input').value; $('#eq-input').value = s; preview(); startPlan(s, 'challenge'); });
-    chRender();
     // redraw the bars when the width changes
     let rz = null, lastW = 0;
     window.addEventListener('resize', () => {
@@ -2078,7 +1862,7 @@ if (typeof module !== 'undefined') module.exports = Engine;
     $$('[data-tex]').forEach(el => { el.innerHTML = K(el.dataset.tex); });
     $$('.md').forEach(el => { el.innerHTML = md(el.innerHTML); });
     preview();
-    window.BarLab = { E, startPlan, st, drawBars, check, doReveal, showScene, hide };
+    window.BarLab = { E, startPlan, st, drawBars, check, doReveal, showScene };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
