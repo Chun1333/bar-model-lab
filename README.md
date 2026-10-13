@@ -2,20 +2,21 @@
 
 **Open it here:** https://chun1333.github.io/bar-model-lab/
 
-Band 3 students make their own linear equation and then solve it step by step with an animated model of boxes and arrows.
+Band 3 students make their own linear equation and then solve it step by step with the teacher's box-and-arrow method, the same method as the printed Week 41 booklet.
 
-Type any linear equation in x (there is a keypad), or tap one of the examples.
+## The rules (shown at the top of the page)
 
-Each step shows the model, asks one question, and explains common mistakes. "I'm stuck" gives a hint, and "Show me" gives the answer. The working builds up beside the model. The last step checks the answer by putting it back into the equation.
+1. The method only works when the answer x is a **positive number**, because x is drawn as a box. When x is negative, use the conventional method instead.
+2. Every x is a box. Boxes of the same length are equal.
+3. A number is an arrow: an arrow to the right adds, and an arrow to the left takes away.
+4. A brace shows a total from the start. The brace over the first box shows one x.
+5. When x's are taken away from a number, the number is a bar and each −x is an arrow going back.
+6. Two rows that end on the same dashed line are equal. Compare what is different.
+7. Brackets: open them, or peel the outside one first. Always check by putting x back in.
 
-How to read the model (the same as the printed Week 41 booklet):
+An equation with a negative or zero answer, or without exactly one answer, is turned away kindly, and the page does not give the answer away.
 
-- Every walk starts at 0.
-- An x is a box. Boxes are drawn to scale.
-- An arrow to the right adds a number. An arrow to the left takes it away.
-- A curly bracket shows how far a part goes.
-- A dotted line means two walks end in the same place.
-- Anything to the left of the dashed 0 line is negative.
+Each step shows the model and asks one question, with feedback on common mistakes. "I'm stuck" gives a hint, and "Show me" gives the answer. The working builds up beside the model, and the last step checks the answer by putting it back into the equation.
 
 It is a single self-contained file (`index.html`) and works offline. Maths is set with [KaTeX](https://katex.org) (MIT License), inlined with its fonts.
 

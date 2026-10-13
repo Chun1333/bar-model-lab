@@ -117,6 +117,7 @@ button.btn:hover:not(:disabled),.nav button:hover,.qa-input button:hover,.row bu
 .arrow{font-size:22px;color:var(--muted);line-height:1}
 .tick{color:var(--good);margin-top:6px}
 .nts{font-size:13px;color:var(--muted);font-style:italic;text-align:right}
+.rule-one{margin:0 0 10px;padding:8px 12px;border-left:3px solid var(--accent);background:var(--accent-soft)}
 .legend{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px 18px;font-size:15px}
 .legend div{display:flex;align-items:center;gap:10px}
 .legend svg{flex:none}
@@ -175,17 +176,30 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
     <div>
       <div class="acad">Chun Academy</div>
       <h1>Bar Model Equation Lab</h1>
-      <div class="sub">Band 3 · Make your own equation, then solve it with boxes and arrows</div>
+      <div class="sub">Band 3 · Make your own equation with a positive answer, then solve it with boxes and arrows</div>
     </div>
   </div>
 </header>
 
 <main>
+<section id="rules" class="card" aria-labelledby="rules-h">
+  <h2 id="rules-h">The rules of the box method</h2>
+  <p class="rule-one"><b>Rule 1.</b> This method only works when the answer <i>x</i> is a <b>positive number</b> (more than 0), because <i>x</i> is drawn as a box. When <i>x</i> is negative, use the conventional method instead.</p>
+  <div class="legend">
+    <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><rect x="31" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="16" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text><text x="46" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text></svg><span><b>2.</b> Every <i>x</i> is a box. Boxes of the same length are equal.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><line x1="3" y1="7" x2="52" y2="7" stroke="var(--ink)" stroke-width="1.6"/><polygon points="61,7 52,3 52,11" fill="var(--ink)"/><line x1="61" y1="18" x2="12" y2="18" stroke="var(--ink)" stroke-width="1.6"/><polygon points="3,18 12,14 12,22" fill="var(--ink)"/></svg><span><b>3.</b> A number is an arrow: to the right adds, to the left takes away.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><path d="M2 18 Q2 12 17 12 T32 6 M62 18 Q62 12 47 12 T32 6" fill="none" stroke="var(--ink)" stroke-width="1.3"/></svg><span><b>4.</b> A brace shows a total from the start. The brace over the first box shows one <i>x</i>.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="1" width="62" height="10" fill="var(--card)" stroke="var(--ink)"/><line x1="62" y1="18" x2="44" y2="18" stroke="var(--ink)" stroke-width="1.4"/><polygon points="38,18 45,15 45,21" fill="var(--ink)"/><line x1="38" y1="18" x2="22" y2="18" stroke="var(--ink)" stroke-width="1.4"/><polygon points="16,18 23,15 23,21" fill="var(--ink)"/></svg><span><b>5.</b> Taking <i>x</i>'s away from a number: the number is a bar, and each &minus;<i>x</i> is an arrow going back.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="1" width="20" height="9" fill="var(--card)" stroke="var(--ink)"/><rect x="21" y="1" width="20" height="9" fill="var(--card)" stroke="var(--ink)"/><rect x="1" y="14" width="20" height="9" fill="var(--card)" stroke="var(--ink)"/><line x1="21" y1="18" x2="56" y2="18" stroke="var(--ink)" stroke-width="1.3"/><line x1="58" y1="0" x2="58" y2="24" stroke="var(--ink)" stroke-dasharray="2 2"/></svg><span><b>6.</b> Two rows that end on the same dashed line are equal. Compare what is different.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><text x="32" y="17" text-anchor="middle" font-size="15" fill="var(--ink)">( &#8230; )</text></svg><span><b>7.</b> Brackets: open them, or peel the outside one first. Always check: put <i>x</i> back in.</span></div>
+  </div>
+</section>
+
 <section id="create" class="card" aria-labelledby="create-h">
   <h2 id="create-h">1. Make an equation</h2>
   <div id="pane-type" class="pane">
     <label class="lbl" for="eq-input">Your equation (use x for the unknown)</label>
-    <input id="eq-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example 3x + 4 = 19">
+    <input id="eq-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example 3x + 4 = 19 (the answer must be positive)">
     <div id="eq-preview" class="preview" aria-live="polite"></div>
     <div id="type-msg" class="msg" aria-live="polite"></div>
     <div id="keys" class="keys" aria-label="Keypad">
@@ -195,15 +209,15 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
     <div class="ex-head">Or try one of these:</div>
     <div id="examples" class="chips">
       <button class="chip" data-eq="3x + 4 = 19" data-tex="3x+4=19"></button>
-      <button class="chip" data-eq="2(x + 3) = 18" data-tex="2(x+3)=18"></button>
-      <button class="chip" data-eq="2x + 3 = x + 8" data-tex="2x+3=x+8"></button>
-      <button class="chip" data-eq="2/3x = 8" data-tex="\tfrac23x=8"></button>
-      <button class="chip" data-eq="2x + 9 = 3" data-tex="2x+9=3"></button>
-      <button class="chip" data-eq="x/4 + 3 = 8" data-tex="\tfrac x4+3=8"></button>
       <button class="chip" data-eq="24 - 3x = 9" data-tex="24-3x=9"></button>
+      <button class="chip" data-eq="x/4 + 3 = 8" data-tex="\tfrac x4+3=8"></button>
+      <button class="chip" data-eq="5(x - 3) = 35" data-tex="5(x-3)=35"></button>
+      <button class="chip" data-eq="8x - 5 = 3x + 20" data-tex="8x-5=3x+20"></button>
+      <button class="chip" data-eq="15 - (x - 4) = 9" data-tex="15-(x-4)=9"></button>
       <button class="chip" data-eq="3(2(x - 1) + 5) = 27" data-tex="3(2(x-1)+5)=27"></button>
-      <button class="chip" data-eq="(5x + 2)/4 = -7" data-tex="\tfrac{5x+2}4=-7"></button>
-      <button class="chip" data-eq="0.6x + 1.5 = -1.5" data-tex="0.6x+1.5=-1.5"></button>
+      <button class="chip" data-eq="2/3x + 4 = 10" data-tex="\tfrac23x+4=10"></button>
+      <button class="chip" data-eq="(5x + 2)/4 = 8" data-tex="\tfrac{5x+2}4=8"></button>
+      <button class="chip" data-eq="2(x + 3) = 18" data-tex="2(x+3)=18"></button>
     </div>
   </div>
 
@@ -239,15 +253,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
   </div>
 </section>
 
-<section class="card" aria-labelledby="key-h">
-  <h2 id="key-h">How to read the model</h2>
-  <div class="legend">
-    <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><rect x="31" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="16" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text><text x="46" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text></svg><span>Every walk starts at 0. An x is a box; boxes of the same length are equal. Drawn to scale.</span></div>
-    <div><svg width="64" height="24" aria-hidden="true"><line x1="3" y1="7" x2="52" y2="7" stroke="var(--ink)" stroke-width="1.6"/><polygon points="61,7 52,3 52,11" fill="var(--ink)"/><line x1="61" y1="18" x2="12" y2="18" stroke="var(--ink)" stroke-width="1.6"/><polygon points="3,18 12,14 12,22" fill="var(--ink)"/></svg><span>An arrow to the right adds a number. An arrow to the left takes it away.</span></div>
-    <div><svg width="64" height="24" aria-hidden="true"><line x1="46" y1="9" x2="10" y2="9" stroke="var(--ink)" stroke-width="1.6"/><polygon points="2,9 10,5 10,13" fill="var(--ink)"/><line x1="46" y1="0" x2="46" y2="16" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="3 2.5"/><text x="46" y="24" text-anchor="middle" font-size="9" fill="var(--ink)">0</text></svg><span>The dashed line is 0. Anything to the left of it is negative.</span></div>
-    <div><svg width="64" height="24" aria-hidden="true"><path d="M2 18 Q2 12 17 12 T32 6 M62 18 Q62 12 47 12 T32 6" fill="none" stroke="var(--ink)" stroke-width="1.3"/></svg><span>A curly bracket shows how far a part goes. A dotted line means two walks end in the same place.</span></div>
-  </div>
-</section>
+
 </main>
 <footer>© 2026 Chun Academy · Band 3 · Linear equations</footer>
 </div>
@@ -693,11 +699,9 @@ const Engine = (() => {
     if (!containsX(eq.L) && !containsX(eq.R)) fail('There is no x in this equation. Put an x somewhere!', 'nox');
     const A = L.a.sub(R.a), B = R.b.sub(L.b);
     const P = new Planner(eq);
-    if (A.isZero()) {
-      P.special(B.isZero() ? 'all' : 'none');
-      return P.result(null);
-    }
+    if (A.isZero()) fail('This equation does not have exactly one answer, so the box method cannot solve it. Try changing a number.', 'notone');
     P.X = B.div(A);
+    if (P.X.sign() <= 0) fail('The box method only works when x is a positive number, and this equation\u2019s answer is not. Change a number to make x positive, or solve it with the conventional method (do the same to both sides).', 'notpositive');
     P.run();
     return P.result(P.X);
   }
@@ -713,6 +717,12 @@ const Engine = (() => {
         Xtex: X ? qTex(X) : null, Xplain: X ? qPlain(X) : null, fractionAnswer: X ? !X.isInt() && !(DECIMALS && decimalString(X)) : false };
     }
     push(s) {
+      // a 'read it the other way round' note joins the next step instead of being a step of its own
+      if (this.pre && s.type !== 'check') {
+        s.text = this.pre.text + ' ' + (s.text || '');
+        s.algebra = this.pre.algebra.concat(s.algebra || []);
+        this.pre = null;
+      }
       if (s.rows && this.zoom) { s.ghost = this.zoom; }
       if (s.type !== 'flip') this.zoom = null;
       const prev = this.scenes[this.scenes.length - 1];
@@ -727,9 +737,13 @@ const Engine = (() => {
       let Lt = this.eq.L, Rt = this.eq.R;
       const xl = hasX(Lt), xr = hasX(Rt);
       if (!xl && xr) {
-        this.push({ type: 'flip', title: 'Turn it round', eq: tex(Lt) + '=' + tex(Rt),
-          text: 'The x is on the right. Swap the two sides so x is on the left: it is the same equation.',
-          algebra: [[tex(Rt), tex(Lt)]] });
+        if (strip(Rt).t === 'x') {
+          this.push({ type: 'flip', title: 'Turn it round', eq: tex(Lt) + '=' + tex(Rt),
+            text: 'The x is on the right. Swap the two sides so x is on the left: it is the same equation.',
+            algebra: [[tex(Rt), tex(Lt)]] });
+        } else {
+          this.pre = { text: `The x is on the right, so read it the other way round: $${tex(Rt)}=${tex(Lt)}$.`, algebra: [[tex(Rt), tex(Lt)]] };
+        }
         [Lt, Rt] = [Rt, Lt];
       }
       if (hasX(Lt) && hasX(Rt)) this.twoSided(Lt, Rt);
@@ -772,35 +786,38 @@ const Engine = (() => {
       this.base(f.a, f.b, N);
     }
 
-    // which bracket structure can be peeled off E (other side is a number)?
+    // which bracket structure can be peeled off E (other side is a number)? -- the teacher's order:
+    //   k(P) with a bracket inside P  -> k equal parts (Type 14);  a plain k(P) is expanded instead (Type 10)
+    //   P / k                         -> k equal parts of the number (Types 3, 16)
+    //   x/k + c                       -> the part, then the arrow (Type 5)
+    //   c - (bracket)                 -> the bar c, and the bracket as ONE arrow going back (Type 13)
     peelInfo(E) {
       const e = strip(E);
       const bracketish = n => { n = strip(n); return (n.t === 'add' || n.t === 'sub') && hasX(n); };
-      const peelable = n => {
+      const hasBracket = n => n.t === 'par' || (!!n.a && hasBracket(n.a)) || (!!n.b && hasBracket(n.b));
+      const kTimes = n => {
         n = strip(n);
-        if (n.t === 'mul') {
-          const [k, P] = !hasX(n.a) ? [n.a, n.b] : !hasX(n.b) ? [n.b, n.a] : [null, null];
-          return !!(k && smallInt(lin(k).b) && bracketish(P));
-        }
-        if (n.t === 'div') return !hasX(n.b) && smallInt(lin(n.b).b) && (bracketish(n.a) || strip(n.a).t === 'x');
-        return false;
+        if (n.t !== 'mul') return null;
+        const [k, P] = !hasX(n.a) ? [n.a, n.b] : !hasX(n.b) ? [n.b, n.a] : [null, null];
+        return k && smallInt(lin(k).b) && bracketish(P) ? { k: lin(k).b, P: strip(P) } : null;
       };
-      if (e.t === 'mul' && peelable(e)) {
-        const [k, P] = !hasX(e.a) ? [e.a, e.b] : [e.b, e.a];
-        return { kind: 'group', k: lin(k).b, P: strip(P), whole: e };
-      }
-      if (e.t === 'div' && peelable(e)) return { kind: 'share', k: lin(e.b).b, P: strip(e.a), whole: e };
+      const divBy = n => {
+        n = strip(n);
+        return n.t === 'div' && !hasX(n.b) && smallInt(lin(n.b).b) && (bracketish(n.a) || strip(n.a).t === 'x') ? { k: lin(n.b).b, P: strip(n.a) } : null;
+      };
+      const g = kTimes(e);
+      if (g && hasBracket(g.P)) return { kind: 'group', k: g.k, P: g.P, whole: e };
+      const d = divBy(e);
+      if (d) return { kind: 'share', k: d.k, P: d.P, whole: e };
       if (e.t === 'add' || e.t === 'sub') {
-        // P ± c  or  c ± P  with P peelable
         const a = e.a, b = e.b;
-        if (hasX(a) && !hasX(b) && peelable(a)) {
+        if (hasX(a) && !hasX(b) && divBy(a)) {
           const c = lin(b).b;
           return { kind: 'join', P: strip(a), c: e.t === 'add' ? c : c.neg(), whole: e, ctex: tex(b), op: e.t };
         }
-        if (!hasX(a) && hasX(b) && peelable(b) && e.t === 'add')
-          return { kind: 'join', P: strip(b), c: lin(a).b, whole: e, ctex: tex(a), op: 'add' };
-        if (!hasX(a) && hasX(b) && peelable(b) && e.t === 'sub')
-          return { kind: 'takeaway', P: strip(b), c: lin(a).b, whole: e, ctex: tex(a) };
+        if (!hasX(a) && hasX(b) && e.t === 'add' && divBy(b)) return { kind: 'join', P: strip(b), c: lin(a).b, whole: e, ctex: tex(a), op: 'add' };
+        const isBracket = n => (n.t === 'par' && bracketish(n)) || !!kTimes(n);
+        if (!hasX(a) && e.t === 'sub' && isBracket(b)) return { kind: 'takeaway', P: strip(b), c: lin(a).b, whole: e, ctex: tex(a) };
       }
       return null;
     }
@@ -858,14 +875,14 @@ const Engine = (() => {
       const arrow = p.c.sign() >= 0 ? `the arrow $+${qTex(p.c)}$ (to the right)` : `the arrow $${qTex(p.c)}$ (to the left)`;
       this.push({
         type: 'bars', title: 'Part and an arrow', eq: tex(p.whole) + '=' + qTex(N),
-        text: `Walk $${Ptex}$, then ${arrow}: you land on $${qTex(N)}$.` + negNote(Pv, N, Ptex),
+        text: `Draw the part $${Ptex}$, then ${arrow}: you land on $${qTex(N)}$.` + negNote(Pv, N, Ptex),
         rows: [row], braces: [brace(0, ZERO, N, 'b', qTex(N))],
         focus: [[0, 0]],
         question: {
           prompt: `So $${Ptex}$ is how much?`, answer: Pv,
           hint: p.c.sign() >= 0 ? `The arrow added $${qTex(p.c)}$. Take it away from $${qTex(N)}$.` : `The arrow took $${qAbsTex(p.c)}$ away, so $${Ptex}$ is $${qAbsTex(p.c)}$ more than $${qTex(N)}$.`,
-          diag: [[N, 'That is where the walk ends. We want only the first part.'],
-                 [N.add(p.c), p.c.sign() > 0 ? `You added $${qTex(p.c)}$. The arrow is part of the walk, so take it away.` : 'The arrow already took it away. Go the other way: add it back.'],
+          diag: [[N, 'That is the total (the brace). We want only the first part.'],
+                 [N.add(p.c), p.c.sign() > 0 ? `You added $${qTex(p.c)}$. The arrow is part of the total, so take it away.` : 'The arrow already took it away. Go the other way: add it back.'],
                  [Pv.neg(), signMsg(Pv)]],
         },
         reveal: { braces: [brace(0, ZERO, Pv, 'a', `${Ptex}=${qTex(N)}${p.c.sign() >= 0 ? '-' : '+'}${qAbsTex(p.c)}=${qTex(Pv)}`)], fade: [[0, 'arrows']] },
@@ -877,18 +894,18 @@ const Engine = (() => {
     // c − P = N : start at c and go back P, landing on N
     takeaway(p, N) {
       const Pv = p.c.sub(N), Ptex = tex(p.P);
-      const { row } = backRow(p.c, { count: 1, each: Pv, label: Ptex, kind: 'block' }, '-' + texFactor(p.P));
+      const row = walk([B(1, p.c, qTex(p.c), 'num'), A(Pv.neg(), '-' + texFactor(p.P))]);
       this.push({
-        type: 'bars', title: 'Go back', eq: tex(p.whole) + '=' + qTex(N),
-        text: `Start at $${p.ctex}$ and go back $${Ptex}$: you land on $${qTex(N)}$.` + negNote(Pv, N, Ptex),
+        type: 'bars', title: 'Take the bracket away', eq: tex(p.whole) + '=' + qTex(N),
+        text: `Start with the bar $${p.ctex}$. The bracket $${p.P.t === 'mul' ? Ptex : '(' + Ptex + ')'}$ is taken away, so it is one arrow going back. You land on $${qTex(N)}$.`,
         rows: [row], braces: [brace(0, ZERO, N, 'b', qTex(N))],
-        focus: [[0, 0]],
+        focus: [[0, 'arrows']],
         question: {
-          prompt: `So $${Ptex}$ is how much?`, answer: Pv,
-          hint: `$${Ptex}$ is the distance from $${qTex(N)}$ back to $${qTex(p.c)}$: work out $${qTex(p.c)}-${texPar(N)}$.`,
-          diag: [[p.c, `That is where you start. $${Ptex}$ is the part you go back.`], [p.c.add(N), 'You added. Take it away instead.'], [Pv.neg(), signMsg(Pv)]],
+          prompt: `The bracket takes you from $${qTex(p.c)}$ back to $${qTex(N)}$. How much is $${Ptex}$?`, answer: Pv,
+          hint: `How far is it from $${qTex(N)}$ up to $${qTex(p.c)}$? Work out $${qTex(p.c)}-${texPar(N)}$.`,
+          diag: [[p.c, `That is the whole bar. The bracket is only the part taken away.`], [p.c.add(N), 'You added. Take it away instead.'], [N, 'That is where you land. How far did the arrow go back?']],
         },
-        reveal: { braces: [brace(0, N, p.c, 'a', `${Ptex}=${qTex(p.c)}-${texPar(N)}=${qTex(Pv)}`)], fade: [[0, 'arrows']] },
+        reveal: { braces: [brace(0, N, p.c, 'b', `${Ptex}=${qTex(p.c)}-${texPar(N)}=${qTex(Pv)}`)] },
         algebra: [[Ptex, qTex(Pv)]],
       });
       const [za, zb] = span(N, p.c);
@@ -984,9 +1001,13 @@ const Engine = (() => {
       }
     }
     flipThenBase(a, b, c) {
-      this.push({ type: 'flip', title: 'Turn it round', eq: qTex(c) + '=' + linTex(a, b),
-        text: 'Now the x\'s are on the right only. Swap the sides: it is the same equation.',
-        algebra: [[linTex(a, b), qTex(c)]] });
+      if (a.eq(ONE) && b.isZero()) {
+        this.push({ type: 'flip', title: 'Turn it round', eq: qTex(c) + '=' + linTex(a, b),
+          text: 'Now the x\'s are on the right only. Swap the sides: it is the same equation.',
+          algebra: [[linTex(a, b), qTex(c)]] });
+      } else {
+        this.pre = { text: `The x's are on the right only, so read it the other way round: $${linTex(a, b)}=${qTex(c)}$.`, algebra: [[linTex(a, b), qTex(c)]] };
+      }
       this.base(a, b, c);
     }
     match(a1, b1, a2, b2) {
@@ -1015,13 +1036,13 @@ const Engine = (() => {
       const f = 'first' + (many ? 1 : m.n);
       this.push({
         type: 'bars', title: 'Find the matching x-boxes', eq: eqnow,
-        text: `The two sides are equal, so the two walks end at the same point (the dotted line). The top walk has ${big.n} x-boxes and the bottom walk has ${m.n}. ${m.n > 1 ? `${m.n} x-boxes in each walk match` : 'One x-box in each walk matches'}.`,
+        text: `The two sides are equal, so the two rows end on the same dashed line. The top row has ${big.n} x-boxes and the bottom row has ${m.n}. ${m.n > 1 ? `${m.n} x-boxes in each row match` : 'One x-box in each row matches'}.`,
         rows, braces: [], guides,
         focus: [[0, f], [1, f]],
         question: {
-          prompt: `Take the matching x-box${m.n > 1 ? 'es' : ''} away from both walks. How many x-boxes are left in the top walk?`,
-          answer: big.sub(m), hint: `The top walk has ${big.n} x-boxes. Take away ${m.n}.`,
-          diag: [[big, 'That is before taking any away.'], [m, 'That is how many we take away from each walk.']],
+          prompt: `Take the matching x-box${m.n > 1 ? 'es' : ''} away from both rows. How many x-boxes are left in the top row?`,
+          answer: big.sub(m), hint: `The top row has ${big.n} x-boxes. Take away ${m.n}.`,
+          diag: [[big, 'That is before taking any away.'], [m, 'That is how many we take away from each row.']],
         },
         reveal: { fade: [[0, f], [1, f]], pairs: true },
         algebra: [left.split('=')],
@@ -1062,7 +1083,16 @@ const Engine = (() => {
       const eqnow = (turned ? `${qTex(b)}-${xpartTex}` : linTex(a, b)) + '=' + qTex(c);
       if (!b.isZero()) {
         let row, says, hint, diag, rev;
-        if (turned) {
+        if (turned && !frac && !big) {
+          // the teacher's drawing: a bar b, then every -x is an arrow going back
+          const moves = [B(1, b, qTex(b), 'num')];
+          for (let i = 0; i < count; i++) moves.push(A(X.neg(), '-x'));
+          row = walk(moves);
+          says = `Start with the bar $${qTex(b)}$ and take away $x$ ${count === 1 ? 'once' : count === 2 ? 'twice' : count + ' times'} (arrows to the left): you land on $${qTex(c)}$.`;
+          hint = `The x-arrows show the amount taken away from $${qTex(b)}$ to reach $${qTex(c)}$. What is the difference, $${qTex(b)}-${texPar(c)}$?`;
+          diag = [[b, 'That is the whole bar. The x-arrows are only the part taken away.'], [b.add(c), 'You added. Take it away instead.']];
+          rev = brace(0, c, b, 'b', `${xpartTex}=${qTex(b)}-${texPar(c)}=${qTex(xp)}`);
+        } else if (turned) {
           row = backRow(b, part, '-' + xpartTex, frac ? `${qTex(b)}-${xpartTex}` : null).row;
           says = `Start at $${qTex(b)}$ (the first arrow) and go back $${xpartTex}$: you land on $${qTex(c)}$.`;
           hint = `$${xpartTex}$ is the distance from $${qTex(c)}$ back to $${qTex(b)}$: work out $${qTex(b)}-${texPar(c)}$.`;
@@ -1070,28 +1100,29 @@ const Engine = (() => {
           rev = brace(0, c, b, 'a', `${xpartTex}=${qTex(b)}-${texPar(c)}=${qTex(xp)}`);
         } else {
           row = sumRow(part, b, { left: frac ? linTex(coef, b) : null }).row;
-          says = `Walk $${xpartTex}$, then the arrow $${signedTex(b)}$ (to the ${b.sign() > 0 ? 'right' : 'left'}): you land on $${qTex(c)}$.`;
+          says = `Draw $${xpartTex}$ as ${frac ? 'equal parts' : big ? 'a block' : count > 1 ? `${count} equal boxes` : 'a box'}, then the arrow $${signedTex(b)}$ (to the ${b.sign() > 0 ? 'right' : 'left'}): you land on $${qTex(c)}$.`;
           hint = b.sign() > 0 ? `The arrow added $${qTex(b)}$. Take it away from $${qTex(c)}$.`
             : `The arrow took $${qAbsTex(b)}$ away, so the x-boxes go $${qAbsTex(b)}$ further than $${qTex(c)}$.`;
-          diag = [[c.add(b), b.sign() > 0 ? `You added $${qTex(b)}$. The arrow is part of the walk, so take it away.` : 'The arrow already took it away. Go the other way: add it back.']];
+          diag = [[c.add(b), b.sign() > 0 ? `You added $${qTex(b)}$. The arrow is part of the total, so take it away.` : 'The arrow already took it away. Go the other way: add it back.']];
           rev = brace(0, ZERO, xp, 'a', `${xpartTex}=${qTex(c)}${b.sign() > 0 ? '-' : '+'}${qAbsTex(b)}=${qTex(xp)}`);
         }
         const rows = [row];
         if (frac) rows.push(walk([B(q, each, unitLabel, 'part', { after: qTex(each) })], 'x'));
         this.push({
           type: 'bars', title: frac ? 'Cut x into equal parts' : 'Find the x-boxes', eq: eqnow,
-          text: says + (frac ? ` The second walk is the whole of $x$, cut into ${q} equal parts.` : '') + negNote(xp, c, xpartTex),
-          rows, braces: [brace(0, ZERO, c, 'b', qTex(c))], focus: [[0, 'xs']], keepScale: true,
+          text: says + (frac ? ` The second row is the whole of $x$, cut into ${q} equal parts.` : '') + negNote(xp, c, xpartTex),
+          rows, braces: [brace(0, ZERO, c, 'b', qTex(c))], focus: [[0, turned && !frac && !big ? 'arrows' : 'xs']], keepScale: true,
           question: {
-            prompt: frac ? `How much are the ${count} part${count > 1 ? 's' : ''} worth altogether?`
+            prompt: turned && !frac && !big ? `How much do the ${count} x-arrows take away altogether?`
+              : frac ? `How much are the ${count} part${count > 1 ? 's' : ''} worth altogether?`
               : big ? `How much is the $${xpartTex}$ block worth?`
               : count > 1 ? `How much are the ${count} x-boxes worth altogether?` : 'How much is the x-box worth?',
             answer: xp, hint,
-            diag: [[c, 'That is where the walk ends. The x-boxes are only part of it.'], ...diag,
+            diag: [[c, 'That is the total (the brace). The x-boxes are only part of it.'], ...diag,
                    [each, count > 1 ? `That is one ${frac ? 'part' : 'box'}. We want all ${count} together first.` : null],
                    [xp.neg(), signMsg(xp)]],
           },
-          reveal: { braces: [rev], fade: [[0, 'arrows']] },
+          reveal: { braces: [rev], fade: turned && !frac && !big ? [] : [[0, 'arrows']] },
           algebra: [[xpartTex, qTex(xp)]],
           zero: X.isZero(),
         });
@@ -1141,7 +1172,7 @@ const Engine = (() => {
             hint: `Share $${qTex(xp)}$ equally into ${count} boxes.`,
             diag: [[xp, `That is all ${count} boxes. Share it into ${count} equal parts.`], [xp.mul(count), 'You multiplied. Share instead.'], [X.neg(), signMsg(X)]],
           },
-          reveal: { labels: true },
+          reveal: { labels: true, braces: big ? [] : [brace(0, ZERO, X, 'a', `x=${qTex(xp)}\\div ${count}=${qTex(X)}`)] },
           algebra: [['x', qTex(X)]], final: true, zero: X.isZero(),
         });
       } else {
@@ -1153,13 +1184,14 @@ const Engine = (() => {
     check() {
       const X = this.X, Lt = this.eq.L, Rt = this.eq.R;
       const lv = valueAt(Lt, X), rv = valueAt(Rt, X);
+      const side = hasX(Lt) ? Lt : Rt, sv = valueAt(side, X);    // ask for the side that has x in it
       this.push({
         type: 'check', title: 'Check', eq: this.eqTex,
         text: `Put $x=${qTex(X)}$ back into the original equation.`,
         show: this.eqTex,
         question: {
-          prompt: `What does the left side, $${tex(Lt)}$, come to when $x=${qTex(X)}$?`, answer: lv,
-          hint: `Replace each x with $${qTex(X)}$: work out $${texSub(Lt, X)}$.`, diag: [],
+          prompt: `What does the side with x, $${tex(side)}$, come to when $x=${qTex(X)}$?`, answer: sv,
+          hint: `Replace each x with $${qTex(X)}$: work out $${texSub(side, X)}$.`, diag: [],
         },
         reveal: { show: `${tex(Lt)}=${qTex(lv)}\\quad\\text{and}\\quad ${tex(Rt)}=${qTex(rv)}`, ok: lv.eq(rv) },
         algebra: [],
@@ -1210,7 +1242,7 @@ const Engine = (() => {
         rows, braces: [], focus: [[0, 'xs'], [1, 'xs']],
         question: {
           prompt: 'After taking the x\'s away, what number is left on the left side?', answer: L.b,
-          hint: 'Look at the arrow in the top walk: it is the number that is not an x.', diag: [],
+          hint: 'Look at the arrow in the top row: it is the number that is not an x.', diag: [],
         },
         reveal: { fade: [[0, 'xs'], [1, 'xs']] },
         algebra: [[qTex(L.b), qTex(R.b)]],
@@ -1231,7 +1263,7 @@ const Engine = (() => {
   // a short note when the walk goes left of 0
   function negNote(part, end, name) {
     if (part.sign() < 0) return ` $${name}$ is negative, so it goes to the left of 0 (the dashed line).`;
-    if (end && end.sign() < 0) return ` The walk ends to the left of 0, so $${qTex(end)}$ is negative.`;
+    if (end && end.sign() < 0) return ` The total is to the left of 0, so $${qTex(end)}$ is negative.`;
     return '';
   }
 
@@ -1757,7 +1789,7 @@ if (typeof module !== 'undefined') module.exports = Engine;
     }
     st.tries++;
     fb.className = 'feedback bad';
-    fb.innerHTML = md(d ? d[1] : (st.tries === 1 && sc.rows ? 'Not quite. Look at the model again.' : (st.tries === 1 ? 'Not quite. ' : '') + q.hint));
+    fb.innerHTML = md(d ? d[1] : (st.tries === 1 ? 'Not quite. ' : '') + q.hint);
     if (st.tries >= 2) $('#showme').hidden = false;
     $('#answer').select();
   }
@@ -1774,6 +1806,8 @@ if (typeof module !== 'undefined') module.exports = Engine;
 
   // ------------------------------------------------------------ typing an equation
   function showInputError(e, from) {
+    // an equation the box method cannot do: put the message by the input and clear the old model away
+    if (e && (e.kind === 'notpositive' || e.kind === 'notone')) { $('#model').hidden = true; st.plan = null; }
     const box = $('#type-msg');
     box.className = 'msg bad';
     box.textContent = e.message || String(e);
