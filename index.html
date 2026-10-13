@@ -176,7 +176,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
     <div>
       <div class="acad">Chun Academy</div>
       <h1>Bar Model Equation Lab</h1>
-      <div class="sub">Band 3 · Make your own equation with a positive answer, then solve it with boxes and arrows</div>
+      <div class="sub">Band 3 · Make your own equation, then solve it step by step</div>
     </div>
   </div>
 </header>
@@ -184,7 +184,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
 <main>
 <section id="rules" class="card" aria-labelledby="rules-h">
   <h2 id="rules-h">The rules of the box method</h2>
-  <p class="rule-one"><b>Rule 1.</b> This method only works when the answer <i>x</i> is a <b>positive number</b> (more than 0), because <i>x</i> is drawn as a box. When <i>x</i> is negative, use the conventional method instead.</p>
+  <p class="rule-one"><b>Rule 1.</b> The box method only works when the answer <i>x</i> is a <b>positive number</b> (more than 0), because <i>x</i> is drawn as a box. When <i>x</i> is negative, the lab uses the <b>conventional method</b> instead: no boxes, just do the same thing to both sides.</p>
   <div class="legend">
     <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><rect x="31" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="16" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text><text x="46" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text></svg><span><b>2.</b> Every <i>x</i> is a box. Boxes of the same length are equal.</span></div>
     <div><svg width="64" height="24" aria-hidden="true"><line x1="3" y1="7" x2="52" y2="7" stroke="var(--ink)" stroke-width="1.6"/><polygon points="61,7 52,3 52,11" fill="var(--ink)"/><line x1="61" y1="18" x2="12" y2="18" stroke="var(--ink)" stroke-width="1.6"/><polygon points="3,18 12,14 12,22" fill="var(--ink)"/></svg><span><b>3.</b> A number is an arrow: to the right adds, to the left takes away.</span></div>
@@ -199,13 +199,13 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
   <h2 id="create-h">1. Make an equation</h2>
   <div id="pane-type" class="pane">
     <label class="lbl" for="eq-input">Your equation (use x for the unknown)</label>
-    <input id="eq-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example 3x + 4 = 19 (the answer must be positive)">
+    <input id="eq-input" class="eq" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="for example 3x + 4 = 19">
     <div id="eq-preview" class="preview" aria-live="polite"></div>
     <div id="type-msg" class="msg" aria-live="polite"></div>
     <div id="keys" class="keys" aria-label="Keypad">
       <button data-k="x"><i>x</i></button><button data-k="+">+</button><button data-k="-">−</button><button data-k="×">×</button><button data-k="÷">÷</button><button data-k="/">/</button><button data-k="(">(</button><button data-k=")">)</button><button data-k="=">=</button><button data-k="." aria-label="decimal point">.</button><button data-k="back" aria-label="delete">⌫</button>
     </div>
-    <button id="draw" class="btn primary">Draw the model</button>
+    <button id="draw" class="btn primary">Solve it</button>
     <div class="ex-head">Or try one of these:</div>
     <div id="examples" class="chips">
       <button class="chip" data-eq="3x + 4 = 19" data-tex="3x+4=19"></button>
@@ -699,10 +699,19 @@ const Engine = (() => {
     if (!containsX(eq.L) && !containsX(eq.R)) fail('There is no x in this equation. Put an x somewhere!', 'nox');
     const A = L.a.sub(R.a), B = R.b.sub(L.b);
     const P = new Planner(eq);
-    if (A.isZero()) fail('This equation does not have exactly one answer, so the box method cannot solve it. Try changing a number.', 'notone');
+    if (A.isZero()) fail('This equation does not have exactly one answer, so it cannot be solved for x. Try changing a number.', 'notone');
     P.X = B.div(A);
-    if (P.X.sign() <= 0) fail('The box method only works when x is a positive number, and this equation\u2019s answer is not. Change a number to make x positive, or solve it with the conventional method (do the same to both sides).', 'notpositive');
+    // the box method is only for a positive x; a negative (or zero) answer is solved with the
+    // conventional method, with NO drawings at all
+    if (P.X.sign() <= 0) { P.conventional(); return P.result(P.X); }
     P.run();
+    const below0 = sc => (sc.rows || []).some(r => r.boxes.concat(r.arrows).some(o => o.a.sign() < 0 || o.b.sign() < 0));
+    if (P.scenes.some(below0)) {           // a drawing would need a number below 0: use the conventional method
+      const C = new Planner(eq);
+      C.X = P.X;
+      C.conventional();
+      return C.result(C.X);
+    }
     return P.result(P.X);
   }
 
@@ -713,7 +722,7 @@ const Engine = (() => {
       DECIMALS = eq.decimals;
     }
     result(X) {
-      return { scenes: this.scenes, X, eqTex: this.eqTex, decimals: this.eq.decimals,
+      return { scenes: this.scenes, X, eqTex: this.eqTex, decimals: this.eq.decimals, method: this.method || 'bar',
         Xtex: X ? qTex(X) : null, Xplain: X ? qPlain(X) : null, fractionAnswer: X ? !X.isInt() && !(DECIMALS && decimalString(X)) : false };
     }
     push(s) {
@@ -1180,6 +1189,82 @@ const Engine = (() => {
       }
     }
 
+    // ---------------------------------------------------- the conventional method (no drawings)
+    // do the same thing to both sides: clear fractions, open brackets, x's to one side, numbers to
+    // the other, divide.  One question per step.
+    conventional() {
+      this.method = 'conventional';
+      const X = this.X;
+      let Lt = this.eq.L, Rt = this.eq.R;
+      if (hasFracOrDecTerms(Lt) || hasFracOrDecTerms(Rt)) {
+        const m = lcm(denomLcm(Lt), denomLcm(Rt));
+        if (m > 1) {
+          const M = new Q(m), before = tex(Lt) + '=' + tex(Rt);
+          const L2 = scaleSide(Lt, M), R2 = scaleSide(Rt, M), after = tex(L2) + '=' + tex(R2);
+          const hasDiv = n => n.t === 'div' || (!!n.a && hasDiv(n.a)) || (!!n.b && hasDiv(n.b));
+          const fr = hasDiv(Lt) || hasDiv(Rt);
+          const what = DECIMALS && fr ? 'fractions and decimals' : DECIMALS ? 'decimals' : 'fractions';
+          const ok = [];
+          for (let k = 2; k <= 6; k++) ok.push([M.mul(k), `That works too, but $${m}$ keeps the numbers small. We will use $${m}$.`, true]);
+          this.push({ type: 'algebra', title: `Clear the ${what}`, eq: before,
+            text: `Multiply <b>every part</b> of both sides by the same number to get rid of the ${what}.`, show: before,
+            question: { prompt: 'Multiply every part by which number?', answer: M,
+              hint: DECIMALS ? 'Look at the decimal places: what turns them into whole numbers?' : 'Find a number that every bottom number (denominator) goes into.', diag: ok },
+            reveal: { show: after }, algebra: [[tex(L2), tex(R2)]] });
+          Lt = L2; Rt = R2;
+        }
+      }
+      let f1 = lin(Lt), f2 = lin(Rt);
+      if (!isSimple(Lt) || !isSimple(Rt)) this.tidy([Lt, Rt], [f1, f2]);
+      let a1 = f1.a, b1 = f1.b, a2 = f2.a, b2 = f2.b;
+      const eqs = (p, q, r, t) => linTex(p, q) + '=' + linTex(r, t);
+      const doTo = (c, what) => (c.sign() > 0 ? `Subtract $${what}$ from both sides.` : `Add $${what.replace(/^-/, '')}$ to both sides.`);
+      // x's on one side: take away the smaller x-term so the x's left over are positive
+      if (!a1.isZero() && !a2.isZero()) {
+        const keepLeft = a1.cmp(a2) >= 0, c = keepLeft ? a2 : a1;
+        const n1 = a1.sub(c), n2 = a2.sub(c);
+        const before = eqs(a1, b1, a2, b2), after = eqs(n1, b1, n2, b2);
+        const left = keepLeft ? n1 : n2;
+        this.push({ type: 'algebra', title: 'Put the x\'s on one side', eq: before,
+          text: doTo(c, coefTex(c)) + ' Then the x\'s are on one side only.', show: before,
+          question: { prompt: `How many x's are left on the ${keepLeft ? 'left' : 'right'} side?`, answer: left,
+            hint: `${keepLeft ? 'The left' : 'The right'} side has $${coefTex(keepLeft ? a1 : a2)}$. Take away $${coefTex(c)}$.`, diag: [] },
+          reveal: { show: after }, algebra: [after.split('=')] });
+        a1 = n1; a2 = n2;
+      }
+      // read it the other way round when the x's are on the right
+      if (a1.isZero()) {
+        [a1, b1, a2, b2] = [a2, b2, a1, b1];
+        this.pre = { text: `The x's are on the right, so read it the other way round: $${eqs(a1, b1, a2, b2)}$.`, algebra: [[linTex(a1, b1), qTex(b2)]] };
+      }
+      // now a1 x + b1 = b2: move the number, then divide
+      let c = b2;
+      if (!b1.isZero()) {
+        const before = eqs(a1, b1, ZERO, b2), after = linTex(a1, ZERO) + '=' + qTex(b2.sub(b1));
+        this.push({ type: 'algebra', title: 'Move the number', eq: before,
+          text: doTo(b1, qTex(b1)) + ' Do the same to both sides so that the equation stays balanced.', show: before,
+          question: { prompt: `So $${coefTex(a1)}$ is how much?`, answer: b2.sub(b1),
+            hint: `Work out $${qTex(b2)}${b1.sign() > 0 ? '-' : '+'}${qAbsTex(b1)}$.`,
+            diag: [[b2.add(b1), b1.sign() > 0 ? `You added $${qTex(b1)}$. Subtract it from both sides instead.` : `You subtracted. Add $${qAbsTex(b1)}$ to both sides instead.`],
+                   [b1.sub(b2), 'Check the sign: it is the right side take away the left number, not the other way round.']] },
+          reveal: { show: after }, algebra: [after.split('=')], final: a1.eq(ONE) });
+        c = b2.sub(b1);
+      }
+      if (!a1.eq(ONE)) {
+        const before = linTex(a1, ZERO) + '=' + qTex(c), after = 'x=' + qTex(X);
+        this.push({ type: 'algebra', title: 'Divide', eq: before,
+          text: `Divide both sides by $${qTex(a1)}$.`, show: before,
+          question: { prompt: 'So what is x?', answer: X,
+            hint: `Work out $${texPar(c)}\\div ${texPar(a1)}$.${c.sign() * a1.sign() < 0 ? ' A negative divided by a positive (or the other way round) is negative.' : ''}`,
+            diag: [[c.mul(a1), 'You multiplied. Divide instead.'], [X.neg(), 'Check the sign.']] },
+          reveal: { show: after }, algebra: [['x', qTex(X)]], final: true });
+      } else if (b1.isZero()) {
+        // a1 = 1 and no number: the equation already says x = ...
+        this.push({ type: 'note', title: 'Done', eq: 'x=' + qTex(c), text: `The equation now says $x=${qTex(c)}$.`, algebra: [['x', qTex(c)]], final: true });
+      }
+      this.check();
+    }
+
     // ---------------------------------------------------- substitute back
     check() {
       const X = this.X, Lt = this.eq.L, Rt = this.eq.R;
@@ -1618,7 +1703,9 @@ if (typeof module !== 'undefined') module.exports = Engine;
     $('#model').hidden = false;
     $('#model-eq').innerHTML = K(p.eqTex, true);
     $('#finish').hidden = true;
-    $('#model-note').innerHTML = p.fractionAnswer ? '<p class="note">This equation has a fraction answer. The model still works!</p>' : '';
+    $('#model-note').innerHTML = p.method === 'conventional'
+      ? '<p class="note"><b>Conventional method:</b> do the same thing to both sides until x is on its own.</p>'
+      : p.fractionAnswer ? '<p class="note">This equation has a fraction answer. The model still works!</p>' : '';
     showScene(0);
     $('#model').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
     return true;
