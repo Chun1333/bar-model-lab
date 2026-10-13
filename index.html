@@ -244,7 +244,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
   <div class="legend">
     <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><rect x="31" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="16" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text><text x="46" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text></svg><span>Every walk starts at 0. An x is a box; boxes of the same length are equal. Drawn to scale.</span></div>
     <div><svg width="64" height="24" aria-hidden="true"><line x1="3" y1="7" x2="52" y2="7" stroke="var(--ink)" stroke-width="1.6"/><polygon points="61,7 52,3 52,11" fill="var(--ink)"/><line x1="61" y1="18" x2="12" y2="18" stroke="var(--ink)" stroke-width="1.6"/><polygon points="3,18 12,14 12,22" fill="var(--ink)"/></svg><span>An arrow to the right adds a number. An arrow to the left takes it away.</span></div>
-    <div><svg width="64" height="24" aria-hidden="true"><rect x="3" y="4" width="28" height="16" fill="var(--card)" stroke="var(--ink)"/><line x1="31" y1="0" x2="31" y2="24" stroke="var(--ink)" stroke-dasharray="3 3"/><rect x="31" y="4" width="0" height="16"/></svg><span>The dashed line is 0. Anything to the left of it is negative.</span></div>
+    <div><svg width="64" height="24" aria-hidden="true"><line x1="46" y1="9" x2="10" y2="9" stroke="var(--ink)" stroke-width="1.6"/><polygon points="2,9 10,5 10,13" fill="var(--ink)"/><line x1="46" y1="0" x2="46" y2="16" stroke="var(--ink)" stroke-width="1.4" stroke-dasharray="3 2.5"/><text x="46" y="24" text-anchor="middle" font-size="9" fill="var(--ink)">0</text></svg><span>The dashed line is 0. Anything to the left of it is negative.</span></div>
     <div><svg width="64" height="24" aria-hidden="true"><path d="M2 18 Q2 12 17 12 T32 6 M62 18 Q62 12 47 12 T32 6" fill="none" stroke="var(--ink)" stroke-width="1.3"/></svg><span>A curly bracket shows how far a part goes. A dotted line means two walks end in the same place.</span></div>
   </div>
 </section>
@@ -812,7 +812,7 @@ const Engine = (() => {
       const row = walk([B(p.k.n, each, Ptex, 'block', { after: qTex(each) })]);
       this.push({
         type: 'bars', title: 'Equal groups', eq: tex(p.whole) + '=' + qTex(N),
-        text: `$${tex(p.whole)}$ means ${p.k.n} equal parts, each $${Ptex}$. Together they go from $0$ to $${qTex(N)}$.` + negNote(N),
+        text: `$${tex(p.whole)}$ means ${p.k.n} equal parts, each $${Ptex}$. Together they go from $0$ to $${qTex(N)}$.` + negNote(N, null, tex(p.whole)),
         rows: [row], braces: [brace(0, ZERO, N, 'b', qTex(N))],
         focus: [[0, 0]],
         question: {
@@ -835,7 +835,7 @@ const Engine = (() => {
       const row = walk([B(p.k.n, N, qTex(N), 'block')]);
       this.push({
         type: 'bars', title: 'Parts of a whole', eq: tex(p.whole) + '=' + qTex(N),
-        text: `$${tex(p.whole)}=${qTex(N)}$ means: cut $${Ptex}$ into ${p.k.n} equal parts and one part is $${qTex(N)}$.` + negNote(N),
+        text: `$${tex(p.whole)}=${qTex(N)}$ means: cut $${Ptex}$ into ${p.k.n} equal parts and one part is $${qTex(N)}$.` + negNote(N, null, qTex(N)),
         rows: [row], braces: [brace(0, ZERO, N, 'a', tex(p.whole))],
         focus: 'all',
         question: {
@@ -858,7 +858,7 @@ const Engine = (() => {
       const arrow = p.c.sign() >= 0 ? `the arrow $+${qTex(p.c)}$ (to the right)` : `the arrow $${qTex(p.c)}$ (to the left)`;
       this.push({
         type: 'bars', title: 'Part and an arrow', eq: tex(p.whole) + '=' + qTex(N),
-        text: `Walk $${Ptex}$, then ${arrow}: you land on $${qTex(N)}$.` + negNote(Pv, N),
+        text: `Walk $${Ptex}$, then ${arrow}: you land on $${qTex(N)}$.` + negNote(Pv, N, Ptex),
         rows: [row], braces: [brace(0, ZERO, N, 'b', qTex(N))],
         focus: [[0, 0]],
         question: {
@@ -880,7 +880,7 @@ const Engine = (() => {
       const { row } = backRow(p.c, { count: 1, each: Pv, label: Ptex, kind: 'block' }, '-' + texFactor(p.P));
       this.push({
         type: 'bars', title: 'Go back', eq: tex(p.whole) + '=' + qTex(N),
-        text: `Start at $${p.ctex}$ and go back $${Ptex}$: you land on $${qTex(N)}$.` + negNote(Pv, N),
+        text: `Start at $${p.ctex}$ and go back $${Ptex}$: you land on $${qTex(N)}$.` + negNote(Pv, N, Ptex),
         rows: [row], braces: [brace(0, ZERO, N, 'b', qTex(N))],
         focus: [[0, 0]],
         question: {
@@ -1080,7 +1080,7 @@ const Engine = (() => {
         if (frac) rows.push(walk([B(q, each, unitLabel, 'part', { after: qTex(each) })], 'x'));
         this.push({
           type: 'bars', title: frac ? 'Cut x into equal parts' : 'Find the x-boxes', eq: eqnow,
-          text: says + (frac ? ` The second walk is the whole of $x$, cut into ${q} equal parts.` : '') + negNote(xp, c),
+          text: says + (frac ? ` The second walk is the whole of $x$, cut into ${q} equal parts.` : '') + negNote(xp, c, xpartTex),
           rows, braces: [brace(0, ZERO, c, 'b', qTex(c))], focus: [[0, 'xs']], keepScale: true,
           question: {
             prompt: frac ? `How much are the ${count} part${count > 1 ? 's' : ''} worth altogether?`
@@ -1133,7 +1133,7 @@ const Engine = (() => {
         const row = big ? walk([B(1, xp, xpartTex, 'x')]) : walk([B(count, X, 'x', 'x', { after: qTex(X) })]);
         this.push({
           type: 'bars', title: 'One x', eq: xpartTex + '=' + qTex(xp),
-          text: `${big ? `The block is ${count} x's` : `There are ${count} equal x-boxes`} and together they make $${qTex(xp)}$.` + (X.isZero() ? ' (The boxes have no length at all!)' : negNote(xp)),
+          text: `${big ? `The block is ${count} x's` : `There are ${count} equal x-boxes`} and together they make $${qTex(xp)}$.` + (X.isZero() ? ' (The boxes have no length at all!)' : negNote(xp, null, xpartTex)),
           rows: [row], braces: [brace(0, ZERO, xp, 'b', qTex(xp))],
           focus: [[0, 'all']], keepScale: true,
           question: {
@@ -1229,11 +1229,12 @@ const Engine = (() => {
     return v.sign() < 0 ? 'Check the sign: it is to the left of the 0 line, so it is negative.' : 'Check the sign: it is to the right of 0, so it is positive.';
   }
   // a short note when the walk goes left of 0
-  function negNote(part, end) {
-    if (part.sign() < 0) return ' It is negative, so it goes to the left of 0 (the dashed line).';
-    if (end && end.sign() < 0) return ' The walk ends to the left of 0, so that number is negative.';
+  function negNote(part, end, name) {
+    if (part.sign() < 0) return ` $${name}$ is negative, so it goes to the left of 0 (the dashed line).`;
+    if (end && end.sign() < 0) return ` The walk ends to the left of 0, so $${qTex(end)}$ is negative.`;
     return '';
   }
+
 
   // ------------------------------------------------------------ answers typed by students
   function parseAnswer(s) {
