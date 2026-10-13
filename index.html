@@ -12,7 +12,7 @@
 :root{
   --paper:#f7f5ef; --card:#ffffff; --ink:#161616; --muted:#5d5a53; --rule:#d6d0c2;
   --accent:#1f3a5f; --accent-ink:#ffffff; --accent-soft:#e7edf5;
-  --good:#2e6a3b; --good-soft:#e6f1e8; --bad:#8f2a2a; --bad-soft:#f6e6e4;
+  --good:#2e6a3b; --good-soft:#e6f1e8; --bad:#8f2a2a; --bad-soft:#f6e6e4; --op:#c2410c; --new:#1d5bd8;
   --hint:#6a4f12; --hint-soft:#f6efdc; --focus:#1f5fa8;
   color-scheme:light;
 }
@@ -20,7 +20,7 @@
   :root:not([data-theme="light"]){
     --paper:#141516; --card:#1d1f21; --ink:#ecebe7; --muted:#a9a59c; --rule:#3a3c3f;
     --accent:#9fbbe0; --accent-ink:#111418; --accent-soft:#25303c;
-    --good:#8fcb9b; --good-soft:#1f2f23; --bad:#e8a39b; --bad-soft:#3a2321;
+    --good:#8fcb9b; --good-soft:#1f2f23; --bad:#e8a39b; --bad-soft:#3a2321; --op:#fb923c; --new:#7cb2ff;
     --hint:#e2c98a; --hint-soft:#3a3220; --focus:#8cb8ef;
     color-scheme:dark;
   }
@@ -28,7 +28,7 @@
 :root[data-theme="dark"]{
   --paper:#141516; --card:#1d1f21; --ink:#ecebe7; --muted:#a9a59c; --rule:#3a3c3f;
   --accent:#9fbbe0; --accent-ink:#111418; --accent-soft:#25303c;
-  --good:#8fcb9b; --good-soft:#1f2f23; --bad:#e8a39b; --bad-soft:#3a2321;
+  --good:#8fcb9b; --good-soft:#1f2f23; --bad:#e8a39b; --bad-soft:#3a2321; --op:#fb923c; --new:#7cb2ff;
   --hint:#e2c98a; --hint-soft:#3a3220; --focus:#8cb8ef; color-scheme:dark;
 }
 *{box-sizing:border-box}
@@ -88,9 +88,12 @@ button.btn:hover:not(:disabled),.nav button:hover,.qa-input button:hover,.row bu
 .stage{min-height:110px;overflow-x:auto;padding:6px 0 2px}
 .stage svg{display:block;overflow:visible}
 .scene-text{margin:8px 0 6px}
-.prompt{font-weight:700;margin:10px 0 6px}
-.qa-input{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.qa-input input{width:8em;padding:7px 10px;border:1px solid var(--ink);background:var(--card);font-size:19px;border-radius:2px}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;margin:2px 0 12px;border-bottom:1px solid var(--ink)}
+.tabs button{font:inherit;color:var(--muted);background:transparent;border:1px solid var(--rule);border-bottom:none;border-radius:2px 2px 0 0;padding:7px 14px;min-height:40px;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);background:var(--card);border-color:var(--ink);font-weight:700;margin-bottom:-1px;padding-bottom:8px}
+.tabs[hidden]{display:none!important}
+.feedback.result{padding:7px 11px;border-left:3px solid var(--accent);background:var(--accent-soft);color:var(--ink);opacity:0;transition:opacity .5s}
+.feedback.result.on{opacity:1}
 .feedback{min-height:1.4em;margin:8px 0;padding:0}
 .feedback.good,.feedback.bad,.feedback.hint,.feedback.warn,.feedback.show,.feedback.special{padding:7px 11px;border-left:3px solid}
 .feedback.good{color:var(--good);background:var(--good-soft)}
@@ -114,6 +117,14 @@ button.btn:hover:not(:disabled),.nav button:hover,.qa-input button:hover,.row bu
 .algstage .katex-display{margin:6px 0}
 .alg-after{opacity:0;transition:opacity .6s}
 .alg-after.on{opacity:1}
+.katex .op{color:var(--op)}
+.katex .new,.new-line{color:var(--new)}
+.bars .blabel.rv{color:var(--new)}
+.bars path.brace.rv{stroke:var(--new)}
+.legend-col{font-size:14px;color:var(--muted);margin:2px 0 8px}
+.legend-col .op{color:var(--op);font-weight:700}.legend-col .new{color:var(--new);font-weight:700}
+.alg-after .res{opacity:0;transition:opacity .6s .7s}
+.alg-after.on .res{opacity:1}
 .arrow{font-size:22px;color:var(--muted);line-height:1}
 .tick{color:var(--good);margin-top:6px}
 .nts{font-size:13px;color:var(--muted);font-style:italic;text-align:right}
@@ -142,8 +153,8 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
 .bars .focus{stroke:var(--focus)!important;stroke-width:3!important;animation:grow .45s both,pulse 1.6s ease-in-out .8s infinite}
 .bars .arw.focus{animation:grow .45s both,pulse 1.6s ease-in-out .8s infinite}
 .bars .fadeable{transition:opacity .7s,stroke-dasharray .7s}
-.bars .faded{opacity:.16;animation:none!important}
-.bars foreignObject.faded{opacity:.25}
+.bars .faded{opacity:.35;animation:none!important}
+.bars foreignObject.faded{opacity:.45}
 .bars .ghost{opacity:.55}
 .bars .gbox{stroke:var(--ink);stroke-width:1;fill:var(--card)}
 .bars .gpart{fill:none;stroke:var(--focus);stroke-width:2.6;animation:fadein .5s both}
@@ -165,6 +176,7 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
   h1{font-size:24px}
   .ops{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
+@media (max-width:520px){ .tabs{flex-wrap:nowrap} .tabs button{flex:1 1 0;padding:7px 6px;font-size:15px;text-align:center} }
 @media (max-width:420px){ .card{padding:14px 12px} .head img{width:42px;height:42px} body{font-size:16px} }
 </style>
 </head>
@@ -176,15 +188,15 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
     <div>
       <div class="acad">Chun Academy</div>
       <h1>Bar Model Equation Lab</h1>
-      <div class="sub">Band 3 · Make your own equation, then solve it step by step</div>
+      <div class="sub">Band 3 · Make your own equation and see it solved step by step</div>
     </div>
   </div>
 </header>
 
 <main>
 <section id="rules" class="card" aria-labelledby="rules-h">
-  <h2 id="rules-h">The rules of the box method</h2>
-  <p class="rule-one"><b>Rule 1.</b> The box method only works when the answer <i>x</i> is a <b>positive number</b> (more than 0), because <i>x</i> is drawn as a box. When <i>x</i> is negative, the lab uses the <b>conventional method</b> instead: no boxes, just do the same thing to both sides.</p>
+  <h2 id="rules-h">The rules</h2>
+  <p class="rule-one"><b>Rule 1.</b> The box method only works when the answer <i>x</i> is a <b>positive number</b> (more than 0), because <i>x</i> is drawn as a box. So when <i>x</i> is positive, the lab shows <b>both methods</b>: the box method and the conventional method. When <i>x</i> is negative, it shows <b>only the conventional method</b>: no boxes, just do the same thing to both sides.</p>
   <div class="legend">
     <div><svg width="64" height="24" aria-hidden="true"><rect x="1" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><rect x="31" y="2" width="30" height="20" fill="var(--card)" stroke="var(--ink)"/><text x="16" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text><text x="46" y="17" text-anchor="middle" font-style="italic" font-size="13" fill="var(--ink)">x</text></svg><span><b>2.</b> Every <i>x</i> is a box. Boxes of the same length are equal.</span></div>
     <div><svg width="64" height="24" aria-hidden="true"><line x1="3" y1="7" x2="52" y2="7" stroke="var(--ink)" stroke-width="1.6"/><polygon points="61,7 52,3 52,11" fill="var(--ink)"/><line x1="61" y1="18" x2="12" y2="18" stroke="var(--ink)" stroke-width="1.6"/><polygon points="3,18 12,14 12,22" fill="var(--ink)"/></svg><span><b>3.</b> A number is an arrow: to the right adds, to the left takes away.</span></div>
@@ -224,29 +236,21 @@ footer{color:var(--muted);font-size:14px;text-align:center;padding:10px 0 30px}
 </section>
 
 <section id="model" class="card" hidden aria-labelledby="model-h">
-  <h2 id="model-h">2. Solve it step by step</h2>
+  <h2 id="model-h">2. Step-by-step solution</h2>
+  <div id="methods" class="tabs" role="tablist" aria-label="Method" hidden><button id="tab-0" role="tab" data-m="0">Bar model method</button><button id="tab-1" role="tab" data-m="1">Conventional method</button></div>
   <div class="model-head"><div id="model-eq"></div><div id="model-note"></div></div>
+  <div class="legend-col"><span class="op">Orange</span>: what we do to both sides · <span class="new">Blue</span>: what changed (the new line)</div>
   <div class="stepbar"><span id="step-count"></span><b id="step-title"></b><span id="step-dots" class="dots" aria-hidden="true"></span></div>
   <div class="model-grid">
     <div class="model-main">
       <div id="scene-eq" class="scene-eq"></div>
       <div id="stage" class="stage"></div>
       <p id="scene-text" class="scene-text"></p>
-      <div id="qa">
-        <div id="prompt" class="prompt"></div>
-        <div id="qa-input" class="qa-input">
-          <input id="answer" autocomplete="off" inputmode="text" aria-label="Your answer" placeholder="?">
-          <button id="check" class="primary">Check</button>
-          <button id="stuck">I'm stuck</button>
-          <button id="showme" hidden>Show me</button>
-        </div>
-      </div>
       <div id="feedback" class="feedback" aria-live="polite"></div>
       <div class="nav"><button id="back" hidden>← Back</button><button id="replay">↻ Replay</button><button id="next" class="primary" hidden>Next step →</button></div>
       <div id="finish" hidden>
         <p id="finish-text"></p>
-        <div class="row"><button id="again" class="primary">Make another equation</button></div>
-        <p id="finish-count" class="muted"></p>
+        <div class="row"><button id="other" class="primary" hidden></button><button id="again">Make another equation</button></div>
       </div>
     </div>
     <aside class="working-box" aria-label="Working"><div class="wh">Working</div><div id="working"></div></aside>
@@ -547,6 +551,11 @@ const Engine = (() => {
     return s;
   }
   const coefTex = (a) => a.eq(ONE) ? 'x' : a.eq(-1) ? '-x' : linTex(a, ZERO);
+  // "- 3x" / "+ 2x" / "- 4" / "+ 9": the same thing done to both sides (c is what is taken away)
+  // the part done to both sides is marked \htmlClass{op} (the page colours it)
+  const OP = t => `\\htmlClass{op}{${t}}`;
+  const takeTex = (c, isX) => { const m = isX ? coefTex(c.abs()) : qTex(c.abs()); return OP('{}' + (c.sign() > 0 ? '-' : '+') + m); };
+  const timesTex = (m, t) => (/^\d+(\.\d+)?$/.test(t) ? `${OP(m + '\\times')} ${t}` : `${OP(m + '\\times')}\\left(${t}\\right)`);
 
   // ------------------------------------------------------------ shape tests
   // terms of a sum, with signs
@@ -705,14 +714,13 @@ const Engine = (() => {
     // conventional method, with NO drawings at all
     if (P.X.sign() <= 0) { P.conventional(); return P.result(P.X); }
     P.run();
+    const conv = () => { const C = new Planner(eq); C.X = P.X; C.conventional(); return C.result(C.X); };
     const below0 = sc => (sc.rows || []).some(r => r.boxes.concat(r.arrows).some(o => o.a.sign() < 0 || o.b.sign() < 0));
-    if (P.scenes.some(below0)) {           // a drawing would need a number below 0: use the conventional method
-      const C = new Planner(eq);
-      C.X = P.X;
-      C.conventional();
-      return C.result(C.X);
-    }
-    return P.result(P.X);
+    if (P.scenes.some(below0)) return conv();   // a drawing would need a number below 0: conventional method only
+    // a positive answer: the box method, and the conventional method beside it
+    const res = P.result(P.X);
+    res.conventional = conv();
+    return res;
   }
 
   class Planner {
@@ -932,14 +940,14 @@ const Engine = (() => {
       for (let k = 2; k <= 6; k++) ok.push([M.mul(k), `That works too, but $${m}$ is smaller and keeps the numbers small. We will use $${m}$.`, true]);
       this.push({
         type: 'algebra', title: `Get rid of the ${what}`, eq: before.join('='),
-        text: `The model is easier with whole numbers. Multiply <b>every part</b> of both sides by the same number to get rid of the ${what}.`,
+        text: `The model is easier with whole numbers. Multiply <b>every part</b> of both sides by $${m}$ to get rid of the ${what}.`,
         show: before.join('='),
         question: {
           prompt: 'Multiply every part by which number?', answer: M,
           hint: DECIMALS ? `Look at the decimal places: what turns them into whole numbers?` : `Find a number that every bottom number (denominator) goes into.`,
           diag: ok,
         },
-        reveal: { show: after.map(tex).join('=') },
+        reveal: { mid: timesTex(m, before[0]) + '=' + timesTex(m, before[1]), show: after.map(tex).join('=') },
         algebra: [[tex(after[0]), tex(after[1])]],
       });
       void structured;
@@ -995,14 +1003,14 @@ const Engine = (() => {
         const after = linTex(n1, b1) + '=' + linTex(n2, b2);
         this.push({
           type: 'algebra', title: 'Move the x\'s', eq: linTex(a1, b1) + '=' + linTex(a2, b2),
-          text: `One side takes x's away. Add the same number of x's to <b>both</b> sides so that all the x's are on one side.`,
+          text: `One side takes x's away. Add $${coefTex(k)}$ to <b>both</b> sides so that all the x's are on one side.`,
           show: linTex(a1, b1) + '=' + linTex(a2, b2),
           question: {
             prompt: 'How many x\'s do you add to both sides?', answer: k,
             hint: `Look for the side with $${coefTex(k.neg())}$: adding $${coefTex(k)}$ there leaves no x.`,
             diag: [],
           },
-          reveal: { show: after },
+          reveal: { mid: `${linTex(a1, b1)}${takeTex(k.neg(), true)}=${linTex(a2, b2)}${takeTex(k.neg(), true)}`, show: after },
           algebra: [after.split('=')],
         });
         if (n2.isZero()) this.base(n1, b1, b2);
@@ -1206,11 +1214,11 @@ const Engine = (() => {
           const what = DECIMALS && fr ? 'fractions and decimals' : DECIMALS ? 'decimals' : 'fractions';
           const ok = [];
           for (let k = 2; k <= 6; k++) ok.push([M.mul(k), `That works too, but $${m}$ keeps the numbers small. We will use $${m}$.`, true]);
-          this.push({ type: 'algebra', title: `Clear the ${what}`, eq: before,
-            text: `Multiply <b>every part</b> of both sides by the same number to get rid of the ${what}.`, show: before,
+          this.push({ type: 'algebra', title: `Multiply both sides by $${m}$`, eq: before,
+            text: `Multiply <b>every part</b> of both sides by $${m}$ to get rid of the ${what}.`, show: before,
             question: { prompt: 'Multiply every part by which number?', answer: M,
               hint: DECIMALS ? 'Look at the decimal places: what turns them into whole numbers?' : 'Find a number that every bottom number (denominator) goes into.', diag: ok },
-            reveal: { show: after }, algebra: [[tex(L2), tex(R2)]] });
+            reveal: { mid: timesTex(m, tex(Lt)) + '=' + timesTex(m, tex(Rt)), show: after }, algebra: [[tex(L2), tex(R2)]] });
           Lt = L2; Rt = R2;
         }
       }
@@ -1225,11 +1233,12 @@ const Engine = (() => {
         const n1 = a1.sub(c), n2 = a2.sub(c);
         const before = eqs(a1, b1, a2, b2), after = eqs(n1, b1, n2, b2);
         const left = keepLeft ? n1 : n2;
-        this.push({ type: 'algebra', title: 'Put the x\'s on one side', eq: before,
+        const op = takeTex(c, true);
+        this.push({ type: 'algebra', title: `${c.sign() > 0 ? 'Subtract' : 'Add'} $${coefTex(c.abs())}$ ${c.sign() > 0 ? 'from' : 'to'} both sides`, eq: before,
           text: doTo(c, coefTex(c)) + ' Then the x\'s are on one side only.', show: before,
           question: { prompt: `How many x's are left on the ${keepLeft ? 'left' : 'right'} side?`, answer: left,
             hint: `${keepLeft ? 'The left' : 'The right'} side has $${coefTex(keepLeft ? a1 : a2)}$. Take away $${coefTex(c)}$.`, diag: [] },
-          reveal: { show: after }, algebra: [after.split('=')] });
+          reveal: { mid: `${linTex(a1, b1)}${op}=${linTex(a2, b2)}${op}`, show: after }, algebra: [after.split('=')] });
         a1 = n1; a2 = n2;
       }
       // read it the other way round when the x's are on the right
@@ -1241,23 +1250,24 @@ const Engine = (() => {
       let c = b2;
       if (!b1.isZero()) {
         const before = eqs(a1, b1, ZERO, b2), after = linTex(a1, ZERO) + '=' + qTex(b2.sub(b1));
-        this.push({ type: 'algebra', title: 'Move the number', eq: before,
-          text: doTo(b1, qTex(b1)) + ' Do the same to both sides so that the equation stays balanced.', show: before,
+        const op = takeTex(b1, false);
+        this.push({ type: 'algebra', title: `${b1.sign() > 0 ? 'Subtract' : 'Add'} $${qTex(b1.abs())}$ ${b1.sign() > 0 ? 'from' : 'to'} both sides`, eq: before,
+          text: doTo(b1, qTex(b1)) + ' Doing the same to both sides keeps the equation balanced.', show: before,
           question: { prompt: `So $${coefTex(a1)}$ is how much?`, answer: b2.sub(b1),
             hint: `Work out $${qTex(b2)}${b1.sign() > 0 ? '-' : '+'}${qAbsTex(b1)}$.`,
             diag: [[b2.add(b1), b1.sign() > 0 ? `You added $${qTex(b1)}$. Subtract it from both sides instead.` : `You subtracted. Add $${qAbsTex(b1)}$ to both sides instead.`],
                    [b1.sub(b2), 'Check the sign: it is the right side take away the left number, not the other way round.']] },
-          reveal: { show: after }, algebra: [after.split('=')], final: a1.eq(ONE) });
+          reveal: { mid: `${linTex(a1, b1)}${op}=${qTex(b2)}${op}`, show: after }, algebra: [after.split('=')], final: a1.eq(ONE) });
         c = b2.sub(b1);
       }
       if (!a1.eq(ONE)) {
         const before = linTex(a1, ZERO) + '=' + qTex(c), after = 'x=' + qTex(X);
-        this.push({ type: 'algebra', title: 'Divide', eq: before,
-          text: `Divide both sides by $${qTex(a1)}$.`, show: before,
+        this.push({ type: 'algebra', title: `Divide both sides by $${qTex(a1)}$`, eq: before,
+          text: `Divide both sides by $${qTex(a1)}$, so that x is on its own.`, show: before,
           question: { prompt: 'So what is x?', answer: X,
             hint: `Work out $${texPar(c)}\\div ${texPar(a1)}$.${c.sign() * a1.sign() < 0 ? ' A negative divided by a positive (or the other way round) is negative.' : ''}`,
             diag: [[c.mul(a1), 'You multiplied. Divide instead.'], [X.neg(), 'Check the sign.']] },
-          reveal: { show: after }, algebra: [['x', qTex(X)]], final: true });
+          reveal: { mid: `\\dfrac{${linTex(a1, ZERO)}}{${OP(qTex(a1))}}=\\dfrac{${qTex(c)}}{${OP(qTex(a1))}}`, show: after }, algebra: [['x', qTex(X)]], final: true });
       } else if (b1.isZero()) {
         // a1 = 1 and no number: the equation already says x = ...
         this.push({ type: 'note', title: 'Done', eq: 'x=' + qTex(c), text: `The equation now says $x=${qTex(c)}$.`, algebra: [['x', qTex(c)]], final: true });
@@ -1278,7 +1288,8 @@ const Engine = (() => {
           prompt: `What does the side with x, $${tex(side)}$, come to when $x=${qTex(X)}$?`, answer: sv,
           hint: `Replace each x with $${qTex(X)}$: work out $${texSub(side, X)}$.`, diag: [],
         },
-        reveal: { show: `${tex(Lt)}=${qTex(lv)}\\quad\\text{and}\\quad ${tex(Rt)}=${qTex(rv)}`, ok: lv.eq(rv) },
+        reveal: { show: '\\begin{aligned}' + [['Left side: ', Lt], ['Right side: ', Rt]].map(([w, t]) => `\\text{${w}}&{` + (hasX(t) ? `${texSub(t, X)}=${qTex(valueAt(t, X))}` : qTex(valueAt(t, X))) + '}').join('\\\\') + '\\end{aligned}', ok: lv.eq(rv),
+                  say: `Left side $=${qTex(lv)}$, right side $=${qTex(rv)}$.` },
         algebra: [],
       });
     }
@@ -1373,14 +1384,15 @@ const Engine = (() => {
 if (typeof module !== 'undefined') module.exports = Engine;
 </script>
 <script>/* =====================================================================
-   Bar Model Equation Lab — drawing and the student's journey
+   Bar Model Equation Lab — drawing and the worked solution
    ===================================================================== */
 (() => {
   'use strict';
   const E = Engine, Q = E.Q;
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
-  const K = (t, display) => katex.renderToString(t, { throwOnError: false, displayMode: !!display });
+  const K = (t, display) => katex.renderToString(t, { throwOnError: false, displayMode: !!display, strict: false, trust: c => c.command === '\\htmlClass' && (c.class === 'op' || c.class === 'new') });
+  const NEW = t => `\\htmlClass{new}{${t}}`;
   const md = s => String(s).split(/(\$[^$]+\$)/).map(p => (p.length > 1 && p[0] === '$' && p.endsWith('$')) ? K(p.slice(1, -1)) : p).join('');
   const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const store = {
@@ -1689,26 +1701,42 @@ if (typeof module !== 'undefined') module.exports = Engine;
     const key = (anyArrow || neg) ? `<div class="minikey">${anyArrow ? '<span><svg class="sw" width="22" height="10" aria-hidden="true"><line x1="1" y1="5" x2="15" y2="5" stroke="currentColor" stroke-width="1.5"/><polygon points="21,5 14,1.5 14,8.5" fill="currentColor"/></svg>arrow right = add, arrow left = take away</span>' : ''}${neg ? '<span><svg class="sw" width="10" height="14" aria-hidden="true"><line x1="5" y1="0" x2="5" y2="14" stroke="currentColor" stroke-width="1.2" stroke-dasharray="3 3"/></svg>left of the dashed 0 line = negative</span>' : ''}</div>` : '';
     const svg = `<svg class="bars" viewBox="0 0 ${F(width)} ${F(height)}" width="${F(width)}" height="${F(height)}" role="img" aria-label="Arrow model">` +
       out + '</svg>' + (notToScale ? '<div class="nts">not drawn to scale</div>' : '') + key;
-    return { svg, height, notToScale };
+    return { svg, height, notToScale, ms: opts.stay ? 0 : n * 70 + 900 };   // ms: when the drawing has finished
   }
 
-  // ------------------------------------------------------------ the journey through a plan
-  // done[i] = how scene i was finished: {text, how: 'typed' | 'shown' | 'auto'}
-  const st = { plan: null, i: 0, revealed: false, tries: 0, stuck: 0, src: '', done: {}, finished: false };
+  // ------------------------------------------------------------ the worked solution, step by step
+  // Nothing is asked: every step draws its model (or shows its equation), then shows what it gives.
+  // A positive answer has two methods (the box method and the conventional method); a negative
+  // answer has the conventional method only.
+  const st = { plan: null, methods: [], m: 0, i: 0, revealed: false, src: '', seen: {}, timer: null };
+  const calm = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const NAMES = { bar: 'Bar model method', conventional: 'Conventional method' };
 
   function startPlan(src, from) {
     let p;
     try { p = E.plan(src); } catch (e) { showInputError(e, from); return false; }
-    st.plan = p; st.i = 0; st.src = src; st.from = from; st.done = {}; st.finished = false;
+    const box = $('#type-msg'); box.className = 'msg'; box.textContent = '';
+    st.methods = p.conventional ? [p, p.conventional] : [p];
+    st.src = src; st.from = from;
     $('#model').hidden = false;
     $('#model-eq').innerHTML = K(p.eqTex, true);
-    $('#finish').hidden = true;
-    $('#model-note').innerHTML = p.method === 'conventional'
-      ? '<p class="note"><b>Conventional method:</b> do the same thing to both sides until x is on its own.</p>'
-      : p.fractionAnswer ? '<p class="note">This equation has a fraction answer. The model still works!</p>' : '';
-    showScene(0);
-    $('#model').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+    setMethod(0);
+    $('#model').scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' });
     return true;
+  }
+  function setMethod(k) {
+    st.m = k; st.plan = st.methods[k]; st.seen = {};
+    const p = st.plan, two = st.methods.length > 1;
+    $('#methods').hidden = !two;
+    $$('#methods button').forEach(b => {
+      const on = +b.dataset.m === k;
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+      b.tabIndex = on ? 0 : -1;
+    });
+    $('#model-note').innerHTML = p.method === 'conventional'
+      ? `<p class="note"><b>Conventional method:</b> do the same thing to both sides until x is on its own.${two ? '' : ' (The box method is for a positive x, so this equation is solved with the conventional method.)'}</p>`
+      : `<p class="note"><b>Bar model method:</b> x is a box and a number is an arrow.${p.fractionAnswer ? ' The answer is a fraction, and the model still works!' : ''}</p>`;
+    showScene(0);
   }
   function splitEq(t) {
     // split a TeX equation at its top-level "="
@@ -1726,38 +1754,37 @@ if (typeof module !== 'undefined') module.exports = Engine;
     return Math.max(300, Math.min(720, el.clientWidth - 4));
   }
 
+  // what a step gives, in one line
+  function resultLine(sc) {
+    const p = st.plan;
+    if (sc.type === 'check') return sc.reveal && sc.reveal.ok ? `Both sides are equal, so $x=${p.Xtex}$ is correct ✓` : 'The two sides are not equal.';
+    const al = sc.algebra || [];
+    if (!al.length) return '';
+    const [l, r] = al[al.length - 1];
+    return `So $${NEW(l + '=' + r)}$.`;
+  }
+
   function showScene(i) {
     const p = st.plan, sc = p.scenes[i];
-    const seen = !!st.done[i];
-    st.i = i; st.revealed = seen; st.tries = 0; st.stuck = 0;
+    clearTimeout(st.timer);
+    const seen = !!st.seen[i];
+    st.i = i; st.revealed = seen;
     $('#step-count').textContent = `Step ${i + 1} of ${p.scenes.length}`;
-    $('#step-title').textContent = sc.title;
-    $('#step-dots').innerHTML = p.scenes.map((s, k) => `<span class="dot${st.done[k] && k !== i ? ' done' : k === i ? ' now' : ''}"></span>`).join('');
-    $('#scene-eq').innerHTML = sc.eq ? K(sc.eq) : '';
+    $('#step-title').innerHTML = md(sc.title);
+    $('#step-dots').innerHTML = p.scenes.map((s, k) => `<span class="dot${k < i ? ' done' : k === i ? ' now' : ''}"></span>`).join('');
+    // the equation above a drawing; an algebra step already shows its equation in the middle
+    $('#scene-eq').innerHTML = sc.rows && sc.eq ? K(sc.eq) : '';
     $('#scene-text').innerHTML = md(sc.text || '');
-    renderStage();
     const fb = $('#feedback');
-    fb.className = 'feedback'; fb.innerHTML = '';
-    $('#answer').value = '';
-    $('#next').hidden = true; $('#showme').hidden = true;
+    const line = resultLine(sc);
+    fb.className = line ? 'feedback result' : 'feedback';
+    fb.innerHTML = line ? md(line) : '';
     $('#back').hidden = i === 0;
-    $('#finish').hidden = !(st.finished && i === p.scenes.length - 1);
-    if (sc.question) {
-      $('#qa').hidden = false;
-      $('#prompt').innerHTML = md(sc.question.prompt);
-      $('#qa-input').hidden = seen;
-      if (seen) {
-        const d = st.done[i];
-        fb.className = 'feedback ' + (d.how === 'shown' ? 'show' : 'good');
-        fb.innerHTML = md(d.how === 'shown' ? `You asked to be shown: $${E.qTex(sc.question.answer)}$.` : `Your answer: $${d.text}$ ✓`);
-      } else {
-        setTimeout(() => { if (st.i === i && !st.revealed && window.innerWidth > 700) $('#answer').focus({ preventScroll: true }); }, 400);
-      }
-    } else {
-      $('#qa').hidden = true;
-    }
-    if (seen) afterReveal(sc);
-    else if (!sc.question) doReveal('auto');
+    $('#next').hidden = true;
+    $('#finish').hidden = true;
+    const ms = renderStage();
+    if (seen) reveal();
+    else st.timer = setTimeout(reveal, calm() ? 0 : Math.max(600, ms));
     renderWorking();
   }
 
@@ -1773,15 +1800,18 @@ if (typeof module !== 'undefined') module.exports = Engine;
         opts.labW = Math.max(0, ...prev.rows.concat(sc.rows).map(r => r.left ? size(r.left, PX).w + 14 : 0));
         opts.stay = true;
       }
-      stage.innerHTML = drawBars(sc, stageWidth(), st.revealed, opts).svg;
+      const d = drawBars(sc, stageWidth(), st.revealed, opts);
+      stage.innerHTML = d.svg;
+      return d.ms;
     } else {
       let h = `<div class="algstage">${K(sc.show || sc.eq || '', true)}`;
       if (sc.reveal && sc.reveal.show) {
-        h += `<div class="alg-after${st.revealed ? ' on' : ''}"><div class="arrow">↓</div>${K(sc.reveal.show, true)}`;
-        if (sc.type === 'check') h += `<div class="tick">${sc.reveal.ok ? 'Both sides match, so the answer is right ✓' : 'The sides do not match.'}</div>`;
-        h += '</div>';
+        h += `<div class="alg-after${st.revealed ? ' on' : ''}"><div class="arrow">↓</div>`
+          + (sc.reveal.mid ? `<div class="mid">${K(sc.reveal.mid, true)}</div><div class="res">${K(NEW(sc.reveal.show), true)}</div>`
+            : K(sc.type === 'check' ? sc.reveal.show : NEW(sc.reveal.show), true)) + '</div>';
       }
       stage.innerHTML = h + '</div>';
+      return 500;
     }
   }
 
@@ -1794,107 +1824,58 @@ if (typeof module !== 'undefined') module.exports = Engine;
     const after = $('#stage .alg-after'); if (after) after.classList.add('on');
   }
 
-  // how: 'typed' (with the student's text), 'shown' or 'auto'
-  function doReveal(how, text) {
-    const sc = st.plan.scenes[st.i];
+  // show what the step gives: the answer in the model, the result line, the working
+  function reveal() {
+    const p = st.plan, sc = p.scenes[st.i];
     st.revealed = true;
-    st.done[st.i] = { how, text: text || '' };
+    st.seen[st.i] = true;
     applyReveal();
-    if (sc.question) {
-      $('#qa-input').hidden = true;
-      if (how === 'shown') {
-        $('#feedback').className = 'feedback show';
-        $('#feedback').innerHTML = md(`The answer is $${E.qTex(sc.question.answer)}$. Look at the model to see why.`);
-      }
-    }
-    renderWorking();
-    afterReveal(sc);
-    const last = st.i === st.plan.scenes.length - 1;
-    if (last && !st.finished) finish();
-    else if (!last) $('#next').focus({ preventScroll: true });
-  }
-  function afterReveal(sc) {
-    const last = st.i === st.plan.scenes.length - 1;
+    $('#feedback').classList.add('on');
     if (sc.special) {
       const fb = $('#feedback');
       fb.className = 'feedback special';
       fb.innerHTML = md(sc.special);
     }
+    renderWorking();
+    const last = st.i === p.scenes.length - 1;
     $('#next').hidden = last;
-    if (last) $('#finish').hidden = false;
+    if (last) finish();
   }
 
   function finish() {
-    const p = st.plan;
-    st.finished = true;
+    const p = st.plan, two = st.methods.length > 1;
     $('#finish').hidden = false;
     $('#finish-text').innerHTML = p.X
-      ? md(`You solved it: $x=${p.Xtex}$. ${p.fractionAnswer ? 'A fraction answer is still an answer!' : ''}`)
+      ? md(`The answer: $x=${p.Xtex}$.${two ? ' Both methods give the same answer.' : ''}`)
       : md('Now you know what happens when the x\'s cancel out completely.');
-    const solved = store.get('solved', 0) + 1;
-    store.set('solved', solved);
-    $('#finish-count').textContent = `Equations solved on this device: ${solved}`;
+    const other = $('#other');
+    other.hidden = !two;
+    if (two) other.textContent = st.m === 0 ? 'Now see the conventional method →' : '← See the bar model method';
   }
 
   // the working so far: the equation, then the algebra of every finished step
   function renderWorking() {
     const p = st.plan;
-    const lines = [splitEq(p.eqTex)];
-    p.scenes.forEach((sc, k) => { if (k < st.i || (k === st.i && st.revealed)) (sc.algebra || []).forEach(l => lines.push(l)); });
+    const lines = [splitEq(p.eqTex)], fresh = new Set();
+    p.scenes.forEach((sc, k) => { if (k < st.i || (k === st.i && st.revealed)) (sc.algebra || []).forEach(l => { if (k === st.i) fresh.add(lines.length); lines.push(l); }); });
     const done = st.revealed && st.i === p.scenes.length - 1 && p.X;
     let lastX = -1;
     if (done) for (let k = lines.length - 1; k >= 0; k--) if (lines[k][0].trim() === 'x') { lastX = k; break; }
-    const rows = lines.map(([l, r], k) => `${l} &= ${k === lastX ? '\\boxed{' + r + '}' : r}`);
+    const rows = lines.map(([l, r], k) => { const rr = k === lastX ? '\\boxed{' + r + '}' : r; return fresh.has(k) ? `${NEW(l)} &${NEW('{}=' + rr)}` : `${l} &= ${rr}`; });
     $('#working').innerHTML = K('\\begin{aligned}' + rows.join('\\\\[2pt]') + '\\end{aligned}', true);
   }
-
-  // ------------------------------------------------------------ answering
-  function check() {
-    const sc = st.plan.scenes[st.i];
-    if (!sc.question || st.revealed) return;
-    const raw = $('#answer').value;
-    const v = E.parseAnswer(raw);
-    const fb = $('#feedback');
-    if (!v) {
-      fb.className = 'feedback warn';
-      fb.innerHTML = 'Type a number, like 12, −3, 0.5 or 3/4.';
-      return;
-    }
-    const q = sc.question;
-    if (v.eq(q.answer)) {
-      fb.className = 'feedback good';
-      fb.innerHTML = md(`${pick(['Yes!', 'Correct!', 'Spot on!', 'That\'s it!'])} $${E.qTex(q.answer)}$`);
-      doReveal('typed', E.qTex(v));
-      return;
-    }
-    const d = (q.diag || []).find(x => x[1] && v.eq(x[0]));
-    if (d && d[2]) {         // a different answer that also works
-      fb.className = 'feedback good';
-      fb.innerHTML = md(d[1]);
-      doReveal('typed', E.qTex(v));
-      return;
-    }
-    st.tries++;
-    fb.className = 'feedback bad';
-    fb.innerHTML = md(d ? d[1] : (st.tries === 1 ? 'Not quite. ' : '') + q.hint);
-    if (st.tries >= 2) $('#showme').hidden = false;
-    $('#answer').select();
-  }
-  function stuck() {
-    const sc = st.plan.scenes[st.i];
-    if (!sc.question || st.revealed) return;
-    st.stuck++;
-    const fb = $('#feedback');
-    fb.className = 'feedback hint';
-    fb.innerHTML = md('Hint: ' + sc.question.hint);
-    $('#showme').hidden = false;
-  }
-  const pick = a => a[Math.floor(Math.random() * a.length)];
+  const go = d => {
+    if (!st.plan || $('#model').hidden) return;
+    const j = st.i + d;
+    if (j < 0 || j >= st.plan.scenes.length) return;
+    if (d > 0 && !st.revealed) { clearTimeout(st.timer); reveal(); }   // first press shows the result, the next one moves on
+    else showScene(j);
+  };
 
   // ------------------------------------------------------------ typing an equation
   function showInputError(e, from) {
     // an equation the box method cannot do: put the message by the input and clear the old model away
-    if (e && (e.kind === 'notpositive' || e.kind === 'notone')) { $('#model').hidden = true; st.plan = null; }
+    if (e && (e.kind === 'notpositive' || e.kind === 'notone')) { $('#model').hidden = true; st.plan = null; clearTimeout(st.timer); }
     const box = $('#type-msg');
     box.className = 'msg bad';
     box.textContent = e.message || String(e);
@@ -1931,25 +1912,32 @@ if (typeof module !== 'undefined') module.exports = Engine;
     $('#draw').addEventListener('click', () => startPlan($('#eq-input').value, 'type'));
     $$('#keys button').forEach(b => b.addEventListener('click', () => { insertAtCursor(b.dataset.k); $('#eq-input').focus({ preventScroll: true }); }));
     $$('#examples button').forEach(b => b.addEventListener('click', () => { $('#eq-input').value = b.dataset.eq; preview(); startPlan(b.dataset.eq, 'type'); }));
-    $('#check').addEventListener('click', check);
-    $('#answer').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); check(); } });
-    $('#stuck').addEventListener('click', stuck);
-    $('#showme').addEventListener('click', () => { doReveal('shown'); });
     $('#back').addEventListener('click', () => { if (st.i > 0) showScene(st.i - 1); });
-    $('#next').addEventListener('click', () => { if (st.i < st.plan.scenes.length - 1) { showScene(st.i + 1); } });
-    $('#replay').addEventListener('click', () => { const r = st.revealed; renderStage(); if (r) setTimeout(applyReveal, 900); });
+    $('#next').addEventListener('click', () => go(1));
+    $('#replay').addEventListener('click', () => { clearTimeout(st.timer); st.revealed = false; const ms = renderStage(); st.timer = setTimeout(reveal, calm() ? 0 : Math.max(600, ms)); });
+    $$('#methods button').forEach(b => b.addEventListener('click', () => { if (+b.dataset.m !== st.m) setMethod(+b.dataset.m); }));
+    $('#methods').addEventListener('keydown', e => {
+      if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && st.methods.length > 1) { e.preventDefault(); const k = 1 - st.m; setMethod(k); $('#tab-' + k).focus(); }
+    });
+    $('#other').addEventListener('click', () => { setMethod(1 - st.m); $('#model').scrollIntoView({ behavior: calm() ? 'auto' : 'smooth', block: 'start' }); });
+    // arrow keys move through the steps (handy on a projector)
+    document.addEventListener('keydown', e => {
+      const t = e.target;
+      if (t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || (t.closest && t.closest('#methods')))) return;
+      if (e.key === 'ArrowRight') go(1); else if (e.key === 'ArrowLeft') go(-1);
+    });
     $('#again').addEventListener('click', () => { $('#create').scrollIntoView({ behavior: 'smooth' }); $('#eq-input').focus({ preventScroll: true }); });
     // redraw the bars when the width changes
     let rz = null, lastW = 0;
     window.addEventListener('resize', () => {
       clearTimeout(rz);
-      rz = setTimeout(() => { if (!st.plan || $('#model').hidden) return; const w = stageWidth(); if (Math.abs(w - lastW) > 8) { lastW = w; const r = st.revealed; renderStage(); if (r) applyReveal(); } }, 150);
+      rz = setTimeout(() => { if (!st.plan || $('#model').hidden) return; const w = stageWidth(); if (Math.abs(w - lastW) > 8) { lastW = w; renderStage(); if (st.revealed) applyReveal(); } }, 150);
     });
     // render maths in static text
     $$('[data-tex]').forEach(el => { el.innerHTML = K(el.dataset.tex); });
     $$('.md').forEach(el => { el.innerHTML = md(el.innerHTML); });
     preview();
-    window.BarLab = { E, startPlan, st, drawBars, check, doReveal, showScene };
+    window.BarLab = { E, startPlan, st, drawBars, showScene, setMethod, reveal };
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

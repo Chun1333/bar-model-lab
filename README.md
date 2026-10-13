@@ -2,11 +2,11 @@
 
 **Open it here:** https://chun1333.github.io/bar-model-lab/
 
-Band 3 students make their own linear equation and then solve it step by step with the teacher's box-and-arrow method, the same method as the printed Week 41 booklet.
+Band 3 students make their own linear equation and see it solved step by step, with the teacher's box-and-arrow method (the same method as the printed Week 41 booklet) and the conventional method.
 
 ## The rules (shown at the top of the page)
 
-1. The box method only works when the answer x is a **positive number**, because x is drawn as a box. When x is negative, the lab uses the **conventional method** instead (no boxes: do the same thing to both sides), one question per step.
+1. The box method only works when the answer x is a **positive number**, because x is drawn as a box. So when x is positive, the lab shows **both methods** (two tabs: Bar model method and Conventional method). When x is negative, it shows **only the conventional method** (no boxes: do the same thing to both sides).
 2. Every x is a box. Boxes of the same length are equal.
 3. A number is an arrow: an arrow to the right adds, and an arrow to the left takes away.
 4. A brace shows a total from the start. The brace over the first box shows one x.
@@ -16,7 +16,7 @@ Band 3 students make their own linear equation and then solve it step by step wi
 
 An equation with a negative answer (or one whose drawing would go below 0) is solved with the conventional method only, so students never see boxes for a negative number. An equation without exactly one answer is turned away kindly.
 
-Each step shows the model and asks one question, with feedback on common mistakes. "I'm stuck" gives a hint, and "Show me" gives the answer. The working builds up beside the model, and the last step checks the answer by putting it back into the equation.
+Nothing is asked: each step draws the model (or shows the equation), then shows what it gives ("So 3x = 15."). Use Next step and Back (or the arrow keys) to move through the steps, and Replay to see a drawing again. The working builds up beside the model, and the last step checks the answer by putting it back into the equation.
 
 It is a single self-contained file (`index.html`) and works offline. Maths is set with [KaTeX](https://katex.org) (MIT License), inlined with its fonts.
 
